@@ -20,7 +20,6 @@
       --light-gray: #F6F6F6;
       --mid-gray: #D1D1D1;
       --dark-gray: #383838;
-      --per-client-cost: 47.34;
     }
 
     html {
@@ -82,10 +81,6 @@
       margin-bottom: 32px;
     }
 
-    .calc-section:last-of-type {
-      margin-bottom: 0;
-    }
-
     .section-label {
       font-size: 0.75rem;
       font-weight: 700;
@@ -102,10 +97,6 @@
     }
 
     /* ── Input fields ── */
-    .input-group {
-      position: relative;
-    }
-
     .number-input {
       width: 100%;
       font-family: Arial, Helvetica, sans-serif;
@@ -147,6 +138,61 @@
 
     .input-hint strong {
       color: var(--black);
+    }
+
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+    }
+
+    .mode-tab {
+      flex: 1;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      padding: 14px 12px;
+      border: 2px solid var(--mid-gray);
+      background: var(--light-gray);
+      color: var(--dark-gray);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .mode-tab:first-child {
+      border-radius: 8px 0 0 8px;
+      border-right: 1px solid var(--mid-gray);
+    }
+
+    .mode-tab:last-child {
+      border-radius: 0 8px 8px 0;
+      border-left: 1px solid var(--mid-gray);
+    }
+
+    .mode-tab:hover:not(.active) {
+      background: var(--irc-yellow-lightest);
+      border-color: var(--irc-yellow);
+    }
+
+    .mode-tab.active {
+      background: var(--irc-yellow);
+      border-color: var(--black);
+      color: var(--black);
+    }
+
+    /* ── Mode panels ── */
+    .mode-panel {
+      display: none;
+    }
+
+    .mode-panel.active {
+      display: block;
     }
 
     /* ── CRF % Toggle ── */
@@ -296,10 +342,6 @@
       line-height: 1.5;
     }
 
-    .footer-legal span {
-      display: block;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 480px) {
       .header-inner {
@@ -321,6 +363,11 @@
       .number-input {
         font-size: 1.5rem;
         padding: 14px 16px;
+      }
+
+      .mode-tab {
+        font-size: 0.8125rem;
+        padding: 12px 8px;
       }
 
       .toggle-btn {
@@ -374,25 +421,30 @@
     <!-- Step 1: Affected Population -->
     <div class="calc-section">
       <label class="section-label" for="affected-pop">Step 1 — Affected Population</label>
-      <div class="input-group">
-        <input
-          type="text"
-          id="affected-pop"
-          class="number-input"
-          inputmode="numeric"
-          placeholder="e.g. 2,000,000"
-          autocomplete="off"
-        />
-      </div>
+      <input
+        type="text"
+        id="affected-pop"
+        class="number-input"
+        inputmode="numeric"
+        placeholder="e.g. 2,000,000"
+        autocomplete="off"
+      />
       <div class="input-hint">Total number of people affected by the emergency</div>
     </div>
 
     <div class="section-divider"></div>
 
-    <!-- Step 2: Target Population -->
+    <!-- Step 2: Choose calculation method -->
     <div class="calc-section">
-      <label class="section-label" for="target-pop">Step 2 — Target Population to Serve</label>
-      <div class="input-group">
+      <div class="section-label">Step 2 — Calculation Method</div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-target" type="button">Target Population</button>
+        <button class="mode-tab" id="tab-crf" type="button">CRF Allocation %</button>
+      </div>
+
+      <!-- Mode A: Target Population -->
+      <div class="mode-panel active" id="panel-target">
+        <label class="section-label" for="target-pop" style="margin-bottom: 8px;">People to Serve</label>
         <input
           type="text"
           id="target-pop"
@@ -401,37 +453,34 @@
           placeholder="Auto-calculated (10%)"
           autocomplete="off"
         />
+        <div class="input-hint" id="target-hint">Defaults to 10% of affected population</div>
       </div>
-      <div class="input-hint" id="target-hint">Defaults to 10% of affected population</div>
+
+      <!-- Mode B: CRF Allocation % -->
+      <div class="mode-panel" id="panel-crf">
+        <div class="toggle-row">
+          <button class="toggle-btn" data-pct="1" type="button">1%</button>
+          <button class="toggle-btn" data-pct="2" type="button">2%</button>
+          <button class="toggle-btn" data-pct="3" type="button">3%</button>
+          <button class="toggle-btn" data-pct="4" type="button">4%</button>
+          <button class="toggle-btn" data-pct="5" type="button">5%</button>
+        </div>
+        <div class="toggle-hint">Percentage of total affected population funded by CRF</div>
+      </div>
     </div>
 
     <div class="section-divider"></div>
 
-    <!-- Step 3: CRF % Toggle -->
+    <!-- Output -->
     <div class="calc-section">
-      <div class="section-label">Step 3 — CRF Allocation Percentage</div>
-      <div class="toggle-row">
-        <button class="toggle-btn" data-pct="1" type="button">1%</button>
-        <button class="toggle-btn" data-pct="2" type="button">2%</button>
-        <button class="toggle-btn" data-pct="3" type="button">3%</button>
-        <button class="toggle-btn" data-pct="4" type="button">4%</button>
-        <button class="toggle-btn" data-pct="5" type="button">5%</button>
-      </div>
-      <div class="toggle-hint">Percentage of total affected population funded by CRF</div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- Step 4: Output -->
-    <div class="calc-section">
-      <div class="output-card" id="output-card">
-        <div class="output-label">CRF Allocation Amount</div>
+      <div class="output-card">
+        <div class="output-label" id="output-label">Funding Estimate</div>
         <div class="output-amount" id="output-amount">
-          <span class="output-placeholder">Select all inputs above</span>
+          <span class="output-placeholder">Enter inputs above</span>
         </div>
         <div class="output-meta" id="output-meta" style="display: none;">
           <div class="output-meta-row">
-            <span class="output-meta-label">People covered by CRF</span>
+            <span class="output-meta-label">People served</span>
             <span class="output-meta-value" id="output-people">—</span>
           </div>
           <div class="output-meta-row">
@@ -450,43 +499,46 @@
       <div class="footer-methodology">
         <h2>Methodology</h2>
         <p>
-          This calculator estimates Crisis Response Fund (CRF) allocations using the IRC's standard
-          per-client cost of $47.34. The target population defaults to 10% of the total affected
-          population, reflecting the IRC's typical planning figure for emergency reach. The CRF
-          allocation percentage (1–5%) determines the share of the total affected population that
-          CRF funding will directly support. The final allocation is calculated as:
-          Affected Population &times; CRF Percentage &times; $47.34 per client, rounded to the
-          nearest $100.
+          This calculator estimates funding allocations using the IRC's standard per-client cost
+          of $47.34, representing the average direct program cost per person served across IRC
+          emergency responses. Two calculation methods are available: <strong>Target Population</strong>
+          lets you specify the number of people to serve (defaulting to 10% of the affected
+          population), while <strong>CRF Allocation %</strong> calculates based on 1–5% of the
+          total affected population. All figures are rounded to the nearest $100.
         </p>
       </div>
       <div class="footer-legal">
-        <span>&copy; International Rescue Committee. For internal use only.</span>
+        &copy; International Rescue Committee. For internal use only.
       </div>
     </div>
   </footer>
 
   <script>
     (function () {
-      const PER_CLIENT_COST = 47.34;
+      var PER_CLIENT_COST = 47.34;
 
-      const affectedInput = document.getElementById('affected-pop');
-      const targetInput = document.getElementById('target-pop');
-      const targetHint = document.getElementById('target-hint');
-      const outputAmount = document.getElementById('output-amount');
-      const outputMeta = document.getElementById('output-meta');
-      const outputPeople = document.getElementById('output-people');
-      const toggleBtns = document.querySelectorAll('.toggle-btn');
+      // DOM refs
+      var affectedInput = document.getElementById('affected-pop');
+      var targetInput = document.getElementById('target-pop');
+      var targetHint = document.getElementById('target-hint');
+      var outputLabel = document.getElementById('output-label');
+      var outputAmount = document.getElementById('output-amount');
+      var outputMeta = document.getElementById('output-meta');
+      var outputPeople = document.getElementById('output-people');
+      var tabTarget = document.getElementById('tab-target');
+      var tabCrf = document.getElementById('tab-crf');
+      var panelTarget = document.getElementById('panel-target');
+      var panelCrf = document.getElementById('panel-crf');
+      var toggleBtns = document.querySelectorAll('.toggle-btn');
 
-      let affectedPop = 0;
-      let targetPop = 0;
-      let targetManuallyEdited = false;
-      let selectedPct = 0;
+      // State
+      var affectedPop = 0;
+      var targetPop = 0;
+      var targetManuallyEdited = false;
+      var selectedPct = 0;
+      var activeMode = 'target'; // 'target' or 'crf'
 
-      // ── Number formatting helpers ──
-      function parseNum(str) {
-        return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
-      }
-
+      // ── Helpers ──
       function formatNum(n) {
         return n.toLocaleString('en-US');
       }
@@ -499,24 +551,21 @@
         return Math.round(n / 100) * 100;
       }
 
-      // ── Format input value while preserving cursor ──
       function formatInput(input) {
-        const raw = input.value.replace(/[^0-9]/g, '');
+        var raw = input.value.replace(/[^0-9]/g, '');
         if (raw === '') {
           input.value = '';
           return 0;
         }
-        const num = parseInt(raw, 10);
-        // Preserve cursor position relative to digits
-        const selStart = input.selectionStart;
-        const beforeCursor = input.value.substring(0, selStart).replace(/[^0-9]/g, '').length;
+        var num = parseInt(raw, 10);
+        var selStart = input.selectionStart;
+        var beforeCursor = input.value.substring(0, selStart).replace(/[^0-9]/g, '').length;
 
         input.value = formatNum(num);
 
-        // Restore cursor
-        let digitCount = 0;
-        let newPos = 0;
-        for (let i = 0; i < input.value.length; i++) {
+        var digitCount = 0;
+        var newPos = 0;
+        for (var i = 0; i < input.value.length; i++) {
           if (/[0-9]/.test(input.value[i])) digitCount++;
           if (digitCount === beforeCursor) {
             newPos = i + 1;
@@ -529,25 +578,43 @@
         return num;
       }
 
-      // ── Affected population input ──
+      // ── Mode switching ──
+      function setMode(mode) {
+        activeMode = mode;
+
+        tabTarget.classList.toggle('active', mode === 'target');
+        tabCrf.classList.toggle('active', mode === 'crf');
+        panelTarget.classList.toggle('active', mode === 'target');
+        panelCrf.classList.toggle('active', mode === 'crf');
+
+        outputLabel.textContent = mode === 'target'
+          ? 'Target Population Funding'
+          : 'CRF Allocation Amount';
+
+        calculate();
+      }
+
+      tabTarget.addEventListener('click', function () { setMode('target'); });
+      tabCrf.addEventListener('click', function () { setMode('crf'); });
+
+      // ── Affected population ──
       affectedInput.addEventListener('input', function () {
         affectedPop = formatInput(this);
 
+        // Auto-fill target if not manually edited
         if (!targetManuallyEdited && affectedPop > 0) {
           targetPop = Math.round(affectedPop * 0.1);
           targetInput.value = formatNum(targetPop);
-          updateTargetHint();
-        } else if (affectedPop === 0) {
-          if (!targetManuallyEdited) {
-            targetPop = 0;
-            targetInput.value = '';
-          }
+        } else if (affectedPop === 0 && !targetManuallyEdited) {
+          targetPop = 0;
+          targetInput.value = '';
         }
 
+        updateTargetHint();
         calculate();
       });
 
-      // ── Target population input ──
+      // ── Target population ──
       targetInput.addEventListener('input', function () {
         targetManuallyEdited = true;
         targetPop = formatInput(this);
@@ -555,17 +622,11 @@
         calculate();
       });
 
-      targetInput.addEventListener('focus', function () {
-        if (!targetManuallyEdited && targetPop > 0) {
-          // Show value so user can edit
-        }
-      });
-
       function updateTargetHint() {
         if (affectedPop > 0 && targetPop > 0) {
-          const pct = ((targetPop / affectedPop) * 100);
-          const pctDisplay = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
-          targetHint.innerHTML = '<strong>' + pctDisplay + '%</strong> of affected population';
+          var pct = (targetPop / affectedPop) * 100;
+          var pctStr = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
+          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected population';
         } else {
           targetHint.textContent = 'Defaults to 10% of affected population';
         }
@@ -581,24 +642,32 @@
         });
       });
 
-      // ── Calculate & display ──
+      // ── Calculate ──
       function calculate() {
-        if (affectedPop > 0 && selectedPct > 0) {
-          const peopleCovered = Math.round(affectedPop * (selectedPct / 100));
-          const rawAmount = peopleCovered * PER_CLIENT_COST;
-          const amount = roundToNearest100(rawAmount);
+        var people = 0;
 
-          // Animate update
+        if (activeMode === 'target') {
+          people = targetPop;
+        } else {
+          if (affectedPop > 0 && selectedPct > 0) {
+            people = Math.round(affectedPop * (selectedPct / 100));
+          }
+        }
+
+        if (people > 0) {
+          var rawAmount = people * PER_CLIENT_COST;
+          var amount = roundToNearest100(rawAmount);
+
           outputAmount.classList.add('updating');
           setTimeout(function () {
             outputAmount.textContent = formatCurrency(amount);
             outputAmount.classList.remove('updating');
           }, 150);
 
-          outputPeople.textContent = formatNum(peopleCovered);
+          outputPeople.textContent = formatNum(people);
           outputMeta.style.display = 'flex';
         } else {
-          outputAmount.innerHTML = '<span class="output-placeholder">Select all inputs above</span>';
+          outputAmount.innerHTML = '<span class="output-placeholder">Enter inputs above</span>';
           outputMeta.style.display = 'none';
         }
       }
