@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crisis Response Fund Calculator — IRC</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --irc-yellow: #FFC72C;
+      --irc-yellow-light: #FFD44B;
+      --irc-yellow-lightest: #FFD960;
+      --black: #000000;
+      --white: #FFFFFF;
+      --light-gray: #F6F6F6;
+      --mid-gray: #D1D1D1;
+      --dark-gray: #383838;
+      --per-client-cost: 47.34;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--black);
+      background: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--black);
+      padding: 20px 24px;
+    }
+
+    .header-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-container svg {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      line-height: 1.2;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    /* ── Sections ── */
+    .calc-section {
+      margin-bottom: 32px;
+    }
+
+    .calc-section:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dark-gray);
+      margin-bottom: 8px;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--mid-gray);
+      margin-bottom: 32px;
+    }
+
+    /* ── Input fields ── */
+    .input-group {
+      position: relative;
+    }
+
+    .number-input {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      background: var(--light-gray);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      padding: 16px 20px;
+      transition: border-color 0.15s ease;
+      -moz-appearance: textfield;
+    }
+
+    .number-input::-webkit-outer-spin-button,
+    .number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .number-input:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      background: var(--white);
+    }
+
+    .number-input::placeholder {
+      color: var(--mid-gray);
+      font-weight: 400;
+    }
+
+    .input-hint {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      margin-top: 8px;
+      min-height: 1.4em;
+    }
+
+    .input-hint strong {
+      color: var(--black);
+    }
+
+    /* ── CRF % Toggle ── */
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      padding: 16px 8px;
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--black);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-btn:hover {
+      border-color: var(--irc-yellow);
+      background: var(--irc-yellow-lightest);
+    }
+
+    .toggle-btn:active {
+      transform: scale(0.97);
+    }
+
+    .toggle-btn.active {
+      background: var(--irc-yellow);
+      border-color: var(--black);
+      color: var(--black);
+    }
+
+    .toggle-hint {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      margin-top: 8px;
+    }
+
+    /* ── Output ── */
+    .output-card {
+      background: var(--black);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: left;
+    }
+
+    .output-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+      margin-bottom: 8px;
+    }
+
+    .output-amount {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1.1;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      word-break: break-word;
+    }
+
+    .output-amount.updating {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    .output-meta {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--dark-gray);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .output-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.875rem;
+    }
+
+    .output-meta-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .output-meta-value {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .output-placeholder {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 400;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 3px solid var(--black);
+      padding: 32px 24px;
+      background: var(--light-gray);
+    }
+
+    .footer-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .footer-methodology {
+      margin-bottom: 24px;
+    }
+
+    .footer-methodology h2 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    .footer-methodology p {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+
+    .footer-legal {
+      font-size: 0.75rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+
+    .footer-legal span {
+      display: block;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .header-inner {
+        gap: 14px;
+      }
+
+      .logo-container svg {
+        height: 32px;
+      }
+
+      .header-title {
+        font-size: 1rem;
+      }
+
+      main {
+        padding: 24px 16px 40px;
+      }
+
+      .number-input {
+        font-size: 1.5rem;
+        padding: 14px 16px;
+      }
+
+      .toggle-btn {
+        font-size: 1rem;
+        padding: 14px 6px;
+        min-height: 50px;
+      }
+
+      .output-card {
+        padding: 24px 20px;
+      }
+
+      .output-amount {
+        font-size: 2.25rem;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+      .output-amount {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="287 160 220 300" aria-label="International Rescue Committee logo">
+          <defs><style>.cls-1{fill:#ffc72c;}</style></defs>
+          <g>
+            <rect class="cls-1" x="287.52" y="163.66" width="216" height="288"/>
+            <g>
+              <path d="M322.31,422.88c-.12.32-.36.88-.84,1.46-.69.8-1.78,1.5-3.36,1.5-2.58,0-4.55-1.89-4.55-5.14s2.14-5.08,4.62-5.08c3.03,0,3.75,2.33,3.97,3l-1.82.48c-.03-.18-.11-.59-.36-.96-.21-.31-.75-.86-1.75-.86-1.58,0-2.69,1.31-2.69,3.39,0,2.22,1.17,3.45,2.7,3.45.91,0,1.46-.44,1.86-.96.32-.42.44-.78.51-1.01l1.71.72ZM338.46,425.84c-1.23,0-2.36-.34-3.35-1.49-.96-1.12-1.3-2.39-1.3-3.61,0-2.98,2.01-5.12,4.67-5.12,2.41,0,4.67,1.79,4.66,5.11-.01,2.79-1.7,5.11-4.69,5.11ZM338.48,417.28c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.22.04-1.9-.94-3.66-2.85-3.66ZM364.52,415.86v9.73h-1.78l.17-8-2.1,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM386.34,415.86v9.73h-1.78l.16-8-2.09,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM400.95,415.86v9.73h-1.79v-9.73h1.79ZM420.17,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM438.54,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM452.33,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM471.57,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13Z"/>
+              <path d="M313.99,190.13h163.05v62.86h-54.96l54.96,54.96v45.23h-45.23l-54.96-54.96v54.96h-62.86v-163.05Z"/>
+              <path d="M315.79,366.42v9.73h-1.79v-9.73h1.79ZM329.18,366.42h1.79v9.73h-1.58l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM344.37,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM352.35,368.04v2.29h4.69v1.57h-4.69v2.61h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM364.63,366.42h3.1c1.3.01,2.16.01,3.02.7.61.5,1.08,1.27,1.08,2.4,0,1.86-1.36,2.51-1.92,2.68l2.17,3.96h-2.08l-1.93-3.61h-1.63v3.61h-1.81v-9.73ZM366.43,367.99v3.05h.63c.62,0,.85-.01,1.2-.03.4-.01,1.71-.08,1.71-1.51,0-.2-.01-.92-.77-1.31-.38-.19-.85-.21-1.93-.21h-.84ZM384.67,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM398.67,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.32,9.73h-1.95l-.56-1.91ZM398.18,372.66l-1.34-4.48-1.35,4.48h2.69ZM412.48,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM420.48,366.42v9.73h-1.79v-9.73h1.79ZM431.75,376.4c-1.23,0-2.36-.35-3.35-1.49-.96-1.12-1.29-2.39-1.29-3.61,0-2.98,2.01-5.13,4.67-5.13,2.41,0,4.67,1.79,4.66,5.12-.01,2.78-1.7,5.11-4.69,5.11ZM431.76,367.83c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.23.04-1.9-.94-3.65-2.85-3.65ZM448.75,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM462.74,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.33,9.73h-1.94l-.57-1.91ZM462.26,372.66l-1.34-4.48-1.35,4.48h2.69ZM473.18,374.5h3.86v1.66h-5.7v-9.75h1.84v8.09Z"/>
+              <path d="M313.99,382.77h13.2c2.51,0,4.91.15,6.52.83,3.52,1.49,4.57,5.1,4.57,7.65,0,.98-.11,3.34-2.02,5.29-1.05,1.13-2.18,1.54-3.41,2.03l6.45,10.69h-9.3l-5.13-9.33h-2.48v9.33h-8.4v-26.48ZM322.39,388.32v6.15h3.49c1.39,0,4.05-.07,4.05-3.04s-2.62-3.11-4.08-3.11h-3.45ZM342.79,382.77h20.96v5.82h-12.58v3.91h11.75v5.75h-11.75v5.25h13.7v5.74h-22.09v-26.48ZM374,400.08c.75,1.16,1.39,2.14,3.68,2.89,1.09.38,2.44.6,3.72.6.68,0,3.98-.07,3.98-1.99,0-.19,0-1.17-1.46-1.65-.94-.34-5.82-1.2-6.91-1.47-2.44-.64-7.21-2.14-7.21-7.7,0-1.17.26-2.37.75-3.42,1.73-3.91,6.2-5.44,10.96-5.44,3.04,0,5.79.6,7.97,1.69,1.99.98,2.97,2.02,3.91,3l-5.25,4.39c-.41-.53-.86-1.12-2-1.73-1.54-.75-3.57-.97-4.92-.97-1.43,0-3,.38-3,1.72,0,1.28,1.35,1.59,3.64,2,5.86,1.02,11.72,2.07,11.72,8.64,0,2.78-1.16,4.73-2.37,5.97-3.34,3.41-8.64,3.41-10.11,3.41-1.99,0-4.09-.19-6.16-.79-4.2-1.2-6.16-3.56-7.36-5.03l6.42-4.13ZM422.96,402.41c-.67,1.28-1.31,2.48-2.59,3.75-2.71,2.66-6.5,3.9-10.29,3.9-9.46,0-13.74-7.14-13.74-13.93s4.77-14.35,13.74-14.35c4.02,0,7.85,1.43,10.62,4.28,1.13,1.16,1.65,2.06,2.22,3.11l-7.02,3.46c-.68-1.55-1.95-4.36-5.48-4.36-1.84,0-3,.86-3.57,1.42-1.99,1.89-1.99,4.89-1.99,5.94,0,3.94,1.46,7.66,5.59,7.66,3.9,0,5.07-3.45,5.37-4.35l7.13,3.46ZM426.27,382.77h8.38v16.53c0,1.13.04,2.29.98,3.19.68.72,1.69.98,2.67.98,1.31,0,2.18-.49,2.67-.94.97-.93,1.01-2.1,1.01-3.23v-16.53h8.45v14.09c0,3.04,0,6.98-3.11,9.95-1.92,1.8-4.99,3.15-9.08,3.15s-7.29-1.28-9.24-3.15c-2.6-2.55-2.64-5.52-2.71-8.3v-15.74ZM454.96,382.77h20.96v5.82h-12.55v3.91h11.72v5.75h-11.72v5.25h13.67v5.74h-22.08v-26.48Z"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="header-title">Crisis Response Fund Calculator</div>
+    </div>
+  </header>
+
+  <!-- Calculator -->
+  <main>
+
+    <!-- Step 1: Affected Population -->
+    <div class="calc-section">
+      <label class="section-label" for="affected-pop">Step 1 — Affected Population</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="affected-pop"
+          class="number-input"
+          inputmode="numeric"
+          placeholder="e.g. 2,000,000"
+          autocomplete="off"
+        />
+      </div>
+      <div class="input-hint">Total number of people affected by the emergency</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Step 2: Target Population -->
+    <div class="calc-section">
+      <label class="section-label" for="target-pop">Step 2 — Target Population to Serve</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="target-pop"
+          class="number-input"
+          inputmode="numeric"
+          placeholder="Auto-calculated (10%)"
+          autocomplete="off"
+        />
+      </div>
+      <div class="input-hint" id="target-hint">Defaults to 10% of affected population</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Step 3: CRF % Toggle -->
+    <div class="calc-section">
+      <div class="section-label">Step 3 — CRF Allocation Percentage</div>
+      <div class="toggle-row">
+        <button class="toggle-btn" data-pct="1" type="button">1%</button>
+        <button class="toggle-btn" data-pct="2" type="button">2%</button>
+        <button class="toggle-btn" data-pct="3" type="button">3%</button>
+        <button class="toggle-btn" data-pct="4" type="button">4%</button>
+        <button class="toggle-btn" data-pct="5" type="button">5%</button>
+      </div>
+      <div class="toggle-hint">Percentage of target population funded by CRF</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Step 4: Output -->
+    <div class="calc-section">
+      <div class="output-card" id="output-card">
+        <div class="output-label">CRF Allocation Amount</div>
+        <div class="output-amount" id="output-amount">
+          <span class="output-placeholder">Select all inputs above</span>
+        </div>
+        <div class="output-meta" id="output-meta" style="display: none;">
+          <div class="output-meta-row">
+            <span class="output-meta-label">People covered by CRF</span>
+            <span class="output-meta-value" id="output-people">—</span>
+          </div>
+          <div class="output-meta-row">
+            <span class="output-meta-label">Cost per client</span>
+            <span class="output-meta-value">$47.34</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-methodology">
+        <h2>Methodology</h2>
+        <p>
+          This calculator estimates Crisis Response Fund (CRF) allocations using the IRC's standard
+          per-client cost of $47.34. The target population defaults to 10% of the total affected
+          population, reflecting the IRC's typical planning figure for emergency reach. The CRF
+          allocation percentage (1–5%) determines the share of the target population that CRF
+          funding will directly support. The final allocation is calculated as:
+          Target Population &times; CRF Percentage &times; $47.34 per client, rounded to the
+          nearest $100.
+        </p>
+      </div>
+      <div class="footer-legal">
+        <span>&copy; International Rescue Committee. For internal use only.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const PER_CLIENT_COST = 47.34;
+
+      const affectedInput = document.getElementById('affected-pop');
+      const targetInput = document.getElementById('target-pop');
+      const targetHint = document.getElementById('target-hint');
+      const outputAmount = document.getElementById('output-amount');
+      const outputMeta = document.getElementById('output-meta');
+      const outputPeople = document.getElementById('output-people');
+      const toggleBtns = document.querySelectorAll('.toggle-btn');
+
+      let affectedPop = 0;
+      let targetPop = 0;
+      let targetManuallyEdited = false;
+      let selectedPct = 0;
+
+      // ── Number formatting helpers ──
+      function parseNum(str) {
+        return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+      }
+
+      function formatNum(n) {
+        return n.toLocaleString('en-US');
+      }
+
+      function formatCurrency(n) {
+        return '$' + n.toLocaleString('en-US');
+      }
+
+      function roundToNearest100(n) {
+        return Math.round(n / 100) * 100;
+      }
+
+      // ── Format input value while preserving cursor ──
+      function formatInput(input) {
+        const raw = input.value.replace(/[^0-9]/g, '');
+        if (raw === '') {
+          input.value = '';
+          return 0;
+        }
+        const num = parseInt(raw, 10);
+        // Preserve cursor position relative to digits
+        const selStart = input.selectionStart;
+        const beforeCursor = input.value.substring(0, selStart).replace(/[^0-9]/g, '').length;
+
+        input.value = formatNum(num);
+
+        // Restore cursor
+        let digitCount = 0;
+        let newPos = 0;
+        for (let i = 0; i < input.value.length; i++) {
+          if (/[0-9]/.test(input.value[i])) digitCount++;
+          if (digitCount === beforeCursor) {
+            newPos = i + 1;
+            break;
+          }
+        }
+        if (beforeCursor === 0) newPos = 0;
+        input.setSelectionRange(newPos, newPos);
+
+        return num;
+      }
+
+      // ── Affected population input ──
+      affectedInput.addEventListener('input', function () {
+        affectedPop = formatInput(this);
+
+        if (!targetManuallyEdited && affectedPop > 0) {
+          targetPop = Math.round(affectedPop * 0.1);
+          targetInput.value = formatNum(targetPop);
+          updateTargetHint();
+        } else if (affectedPop === 0) {
+          if (!targetManuallyEdited) {
+            targetPop = 0;
+            targetInput.value = '';
+          }
+        }
+
+        calculate();
+      });
+
+      // ── Target population input ──
+      targetInput.addEventListener('input', function () {
+        targetManuallyEdited = true;
+        targetPop = formatInput(this);
+        updateTargetHint();
+        calculate();
+      });
+
+      targetInput.addEventListener('focus', function () {
+        if (!targetManuallyEdited && targetPop > 0) {
+          // Show value so user can edit
+        }
+      });
+
+      function updateTargetHint() {
+        if (affectedPop > 0 && targetPop > 0) {
+          const pct = ((targetPop / affectedPop) * 100);
+          const pctDisplay = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
+          targetHint.innerHTML = '<strong>' + pctDisplay + '%</strong> of affected population';
+        } else {
+          targetHint.textContent = 'Defaults to 10% of affected population';
+        }
+      }
+
+      // ── CRF % toggle ──
+      toggleBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          toggleBtns.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          selectedPct = parseInt(btn.getAttribute('data-pct'), 10);
+          calculate();
+        });
+      });
+
+      // ── Calculate & display ──
+      function calculate() {
+        if (targetPop > 0 && selectedPct > 0) {
+          const peopleCovered = Math.round(targetPop * (selectedPct / 100));
+          const rawAmount = peopleCovered * PER_CLIENT_COST;
+          const amount = roundToNearest100(rawAmount);
+
+          // Animate update
+          outputAmount.classList.add('updating');
+          setTimeout(function () {
+            outputAmount.textContent = formatCurrency(amount);
+            outputAmount.classList.remove('updating');
+          }, 150);
+
+          outputPeople.textContent = formatNum(peopleCovered);
+          outputMeta.style.display = 'flex';
+        } else {
+          outputAmount.innerHTML = '<span class="output-placeholder">Select all inputs above</span>';
+          outputMeta.style.display = 'none';
+        }
+      }
+    })();
+  </script>
+
+</body>
+</html>
