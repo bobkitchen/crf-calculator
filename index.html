@@ -417,7 +417,7 @@
         <button class="toggle-btn" data-pct="4" type="button">4%</button>
         <button class="toggle-btn" data-pct="5" type="button">5%</button>
       </div>
-      <div class="toggle-hint">Percentage of target population funded by CRF</div>
+      <div class="toggle-hint">Percentage of total affected population funded by CRF</div>
     </div>
 
     <div class="section-divider"></div>
@@ -453,9 +453,9 @@
           This calculator estimates Crisis Response Fund (CRF) allocations using the IRC's standard
           per-client cost of $47.34. The target population defaults to 10% of the total affected
           population, reflecting the IRC's typical planning figure for emergency reach. The CRF
-          allocation percentage (1–5%) determines the share of the target population that CRF
-          funding will directly support. The final allocation is calculated as:
-          Target Population &times; CRF Percentage &times; $47.34 per client, rounded to the
+          allocation percentage (1–5%) determines the share of the total affected population that
+          CRF funding will directly support. The final allocation is calculated as:
+          Affected Population &times; CRF Percentage &times; $47.34 per client, rounded to the
           nearest $100.
         </p>
       </div>
@@ -583,8 +583,8 @@
 
       // ── Calculate & display ──
       function calculate() {
-        if (targetPop > 0 && selectedPct > 0) {
-          const peopleCovered = Math.round(targetPop * (selectedPct / 100));
+        if (affectedPop > 0 && selectedPct > 0) {
+          const peopleCovered = Math.round(affectedPop * (selectedPct / 100));
           const rawAmount = peopleCovered * PER_CLIENT_COST;
           const amount = roundToNearest100(rawAmount);
 
