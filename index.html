@@ -141,6 +141,110 @@
       color: var(--black);
     }
 
+    /* ── Population row (side by side) ── */
+    .pop-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--mid-gray);
+    }
+
+    .pop-col-input {
+      flex: 1;
+      min-width: 0;
+      padding: 16px 20px;
+      background: var(--light-gray);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .pop-col-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .pop-col-input .number-input {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      padding: 4px 0;
+      font-size: 2rem;
+      border-bottom: 2px solid var(--mid-gray);
+    }
+
+    .pop-col-input .number-input:focus {
+      border-bottom-color: var(--irc-yellow);
+      background: transparent;
+    }
+
+    .pop-col-target {
+      flex: 1.15;
+      min-width: 0;
+      background: var(--black);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .target-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--irc-yellow);
+      margin-bottom: 6px;
+    }
+
+    .target-input {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 0;
+      outline: none;
+      -moz-appearance: textfield;
+      transition: border-color 0.15s ease;
+    }
+
+    .target-input::-webkit-outer-spin-button,
+    .target-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .target-input:focus {
+      border-bottom-color: var(--irc-yellow);
+    }
+
+    .target-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 400;
+    }
+
+    .target-hint {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .target-hint strong {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
     /* ── Total cost card (dark top) ── */
     .total-cost-card {
       background: var(--black);
@@ -361,6 +465,16 @@
     }
 
     /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .pop-row {
+        flex-direction: column;
+      }
+
+      .pop-col-target {
+        flex: none;
+      }
+    }
+
     @media (max-width: 480px) {
       .header-inner {
         gap: 14px;
@@ -381,6 +495,10 @@
       .number-input {
         font-size: 1.5rem;
         padding: 14px 16px;
+      }
+
+      .target-input {
+        font-size: 1.5rem;
       }
 
       .total-cost-card {
@@ -443,41 +561,41 @@
   <!-- Calculator -->
   <main>
 
-    <!-- Step 1: Affected Population -->
+    <!-- Steps 1 & 2: Population (side by side) -->
     <div class="calc-section">
-      <label class="section-label" for="affected-pop">Step 1 — Affected Population</label>
-      <input
-        type="text"
-        id="affected-pop"
-        class="number-input"
-        inputmode="numeric"
-        placeholder="e.g. 2,000,000"
-        autocomplete="off"
-      />
-      <div class="input-hint">Total number of people affected by the emergency</div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- Step 2: IRC Target Population -->
-    <div class="calc-section">
-      <label class="section-label" for="target-pop">Step 2 — IRC Target Population</label>
-      <input
-        type="text"
-        id="target-pop"
-        class="number-input"
-        inputmode="numeric"
-        placeholder="Auto-calculated (10%)"
-        autocomplete="off"
-      />
-      <div class="input-hint" id="target-hint">Defaults to 10% of affected population — adjust based on operational access and feasibility</div>
+      <div class="section-label">Affected Population &amp; IRC Target</div>
+      <div class="pop-row">
+        <div class="pop-col-input">
+          <div class="pop-col-label">Affected Population</div>
+          <input
+            type="text"
+            id="affected-pop"
+            class="number-input"
+            inputmode="numeric"
+            placeholder="e.g. 2,000,000"
+            autocomplete="off"
+          />
+        </div>
+        <div class="pop-col-target" id="target-col">
+          <div class="target-label">IRC Target Population</div>
+          <input
+            type="text"
+            id="target-pop"
+            class="target-input"
+            inputmode="numeric"
+            placeholder="10% auto"
+            autocomplete="off"
+          />
+          <div class="target-hint" id="target-hint">Defaults to 10% — editable</div>
+        </div>
+      </div>
     </div>
 
     <div class="section-divider"></div>
 
     <!-- Step 3: CRF Commitment -->
     <div class="calc-section">
-      <div class="section-label">Step 3 — CRF Commitment Level</div>
+      <div class="section-label">CRF Commitment Level</div>
 
       <!-- Total funding card (dark top) -->
       <div class="total-cost-card" id="total-cost-card">
@@ -635,6 +753,18 @@
         return num;
       }
 
+      // ── Format target input (white text on black) ──
+      function formatTargetInput(input) {
+        var raw = input.value.replace(/[^0-9]/g, '');
+        if (raw === '') {
+          input.value = '';
+          return 0;
+        }
+        var num = parseInt(raw, 10);
+        input.value = formatNum(num);
+        return num;
+      }
+
       // ── Affected population ──
       affectedInput.addEventListener('input', function () {
         affectedPop = formatInput(this);
@@ -654,7 +784,7 @@
       // ── Target population ──
       targetInput.addEventListener('input', function () {
         targetManuallyEdited = true;
-        targetPop = formatInput(this);
+        targetPop = formatTargetInput(this);
         updateTargetHint();
         calculate();
       });
@@ -663,9 +793,9 @@
         if (affectedPop > 0 && targetPop > 0) {
           var pct = (targetPop / affectedPop) * 100;
           var pctStr = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
-          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected population — adjust based on operational access and feasibility';
+          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected pop.';
         } else {
-          targetHint.textContent = 'Defaults to 10% of affected population — adjust based on operational access and feasibility';
+          targetHint.textContent = 'Defaults to 10% — editable';
         }
       }
 
