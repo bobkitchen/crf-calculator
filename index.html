@@ -14,12 +14,13 @@
     :root {
       --irc-yellow: #FFC72C;
       --irc-yellow-light: #FFD44B;
-      --irc-yellow-lightest: #FFD960;
+      --irc-yellow-lightest: #FFF4D6;
       --black: #000000;
       --white: #FFFFFF;
       --light-gray: #F6F6F6;
       --mid-gray: #D1D1D1;
       --dark-gray: #383838;
+      --muted: #6B6B6B;
     }
 
     html {
@@ -46,7 +47,7 @@
     }
 
     .header-inner {
-      max-width: 640px;
+      max-width: 720px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -70,7 +71,7 @@
     /* ── Main ── */
     main {
       flex: 1;
-      max-width: 640px;
+      max-width: 720px;
       width: 100%;
       margin: 0 auto;
       padding: 32px 24px 48px;
@@ -140,170 +141,183 @@
       color: var(--black);
     }
 
-    /* ── Mode tabs ── */
-    .mode-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 24px;
-    }
-
-    .mode-tab {
-      flex: 1;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 0.9375rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      padding: 14px 12px;
-      border: 2px solid var(--mid-gray);
-      background: var(--light-gray);
-      color: var(--dark-gray);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    .mode-tab:first-child {
-      border-radius: 8px 0 0 8px;
-      border-right: 1px solid var(--mid-gray);
-    }
-
-    .mode-tab:last-child {
-      border-radius: 0 8px 8px 0;
-      border-left: 1px solid var(--mid-gray);
-    }
-
-    .mode-tab:hover:not(.active) {
-      background: var(--irc-yellow-lightest);
-      border-color: var(--irc-yellow);
-    }
-
-    .mode-tab.active {
-      background: var(--irc-yellow);
-      border-color: var(--black);
-      color: var(--black);
-    }
-
-    /* ── Mode panels ── */
-    .mode-panel {
-      display: none;
-    }
-
-    .mode-panel.active {
-      display: block;
-    }
-
-    /* ── CRF % Toggle ── */
-    .toggle-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .toggle-btn {
-      flex: 1;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 1.125rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      padding: 16px 8px;
-      border: 2px solid var(--mid-gray);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--black);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .toggle-btn:hover {
-      border-color: var(--irc-yellow);
-      background: var(--irc-yellow-lightest);
-    }
-
-    .toggle-btn:active {
-      transform: scale(0.97);
-    }
-
-    .toggle-btn.active {
-      background: var(--irc-yellow);
-      border-color: var(--black);
-      color: var(--black);
-    }
-
-    .toggle-hint {
-      font-size: 0.875rem;
-      color: var(--dark-gray);
-      margin-top: 8px;
-    }
-
-    /* ── Output ── */
-    .output-card {
+    /* ── Total cost card (dark top) ── */
+    .total-cost-card {
       background: var(--black);
       border-radius: 12px;
-      padding: 32px 24px;
-      text-align: left;
+      padding: 28px 24px;
+      margin-bottom: 0;
     }
 
-    .output-label {
+    .total-cost-label {
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--irc-yellow);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
-    .output-amount {
-      font-size: 3rem;
+    .total-cost-amount {
+      font-size: 2.75rem;
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--white);
       line-height: 1.1;
-      transition: opacity 0.2s ease, transform 0.2s ease;
       word-break: break-word;
     }
 
-    .output-amount.updating {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-
-    .output-meta {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--dark-gray);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .output-meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+    .total-cost-sub {
+      margin-top: 12px;
       font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.4;
     }
 
-    .output-meta-label {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .output-meta-value {
-      color: var(--white);
+    .total-cost-sub strong {
+      color: rgba(255, 255, 255, 0.85);
       font-weight: 700;
     }
 
-    .output-placeholder {
+    .total-cost-placeholder {
       font-size: 1.25rem;
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 0.35);
       font-weight: 400;
+    }
+
+    /* ── Commitment card (white bottom) ── */
+    .commitment-card {
+      border: 2px solid var(--black);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 28px 24px;
+      background: var(--white);
+    }
+
+    /* ── Ratio selector label ── */
+    .selector-label {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    /* ── Ratio buttons ── */
+    .ratio-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .ratio-btn {
+      flex: 1;
+      padding: 16px 4px;
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      background: var(--light-gray);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .ratio-btn:hover:not(.selected) {
+      border-color: var(--irc-yellow);
+      background: var(--irc-yellow-lightest);
+    }
+
+    .ratio-btn:active {
+      transform: scale(0.97);
+    }
+
+    .ratio-btn.selected {
+      border: 2px solid var(--black);
+      background: var(--irc-yellow);
+    }
+
+    .ratio-btn-dollar {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    .ratio-btn.selected .ratio-btn-dollar {
+      color: var(--black);
+    }
+
+    .ratio-btn-num {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      line-height: 1.1;
+    }
+
+    /* ── Split bar ── */
+    .split-bar {
+      height: 12px;
+      border-radius: 6px;
+      background: var(--mid-gray);
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .split-bar-crf {
+      height: 100%;
+      background: var(--irc-yellow);
+      border-radius: 6px 0 0 6px;
+      transition: width 0.3s ease;
+    }
+
+    .split-bar-donor {
+      height: 100%;
+      flex: 1;
+    }
+
+    /* ── Funding amounts ── */
+    .funding-split {
+      display: flex;
+      gap: 20px;
+    }
+
+    .funding-col {
+      flex: 1;
+    }
+
+    .funding-col-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .funding-col-value {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      line-height: 1.1;
+    }
+
+    .funding-col-value.donor-value {
+      color: var(--muted);
+    }
+
+    /* ── Empty state ── */
+    .commitment-empty {
+      border: 2px dashed var(--mid-gray);
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9375rem;
     }
 
     /* ── Footer ── */
@@ -314,7 +328,7 @@
     }
 
     .footer-inner {
-      max-width: 640px;
+      max-width: 720px;
       margin: 0 auto;
     }
 
@@ -334,6 +348,10 @@
       font-size: 0.8125rem;
       color: var(--dark-gray);
       line-height: 1.5;
+    }
+
+    .footer-methodology p + p {
+      margin-top: 8px;
     }
 
     .footer-legal {
@@ -365,29 +383,36 @@
         padding: 14px 16px;
       }
 
-      .mode-tab {
-        font-size: 0.8125rem;
-        padding: 12px 8px;
+      .total-cost-card {
+        padding: 20px;
       }
 
-      .toggle-btn {
-        font-size: 1rem;
-        padding: 14px 6px;
-        min-height: 50px;
+      .total-cost-amount {
+        font-size: 2rem;
       }
 
-      .output-card {
-        padding: 24px 20px;
+      .commitment-card {
+        padding: 20px;
       }
 
-      .output-amount {
-        font-size: 2.25rem;
+      .selector-label {
+        font-size: 1.125rem;
       }
-    }
 
-    @media (min-width: 481px) and (max-width: 768px) {
-      .output-amount {
-        font-size: 2.5rem;
+      .ratio-btn {
+        padding: 12px 4px;
+      }
+
+      .ratio-btn-num {
+        font-size: 1.375rem;
+      }
+
+      .funding-col-value {
+        font-size: 1.5rem;
+      }
+
+      .funding-split {
+        gap: 12px;
       }
     }
   </style>
@@ -434,60 +459,85 @@
 
     <div class="section-divider"></div>
 
-    <!-- Step 2: Choose calculation method -->
+    <!-- Step 2: IRC Target Population -->
     <div class="calc-section">
-      <div class="section-label">Step 2 — Calculation Method</div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-target" type="button">Target Population</button>
-        <button class="mode-tab" id="tab-crf" type="button">CRF Allocation %</button>
-      </div>
-
-      <!-- Mode A: Target Population -->
-      <div class="mode-panel active" id="panel-target">
-        <label class="section-label" for="target-pop" style="margin-bottom: 8px;">People to Serve</label>
-        <input
-          type="text"
-          id="target-pop"
-          class="number-input"
-          inputmode="numeric"
-          placeholder="Auto-calculated (10%)"
-          autocomplete="off"
-        />
-        <div class="input-hint" id="target-hint">Defaults to 10% of affected population</div>
-      </div>
-
-      <!-- Mode B: CRF Allocation % -->
-      <div class="mode-panel" id="panel-crf">
-        <div class="toggle-row">
-          <button class="toggle-btn" data-pct="1" type="button">1%</button>
-          <button class="toggle-btn" data-pct="2" type="button">2%</button>
-          <button class="toggle-btn" data-pct="3" type="button">3%</button>
-          <button class="toggle-btn" data-pct="4" type="button">4%</button>
-          <button class="toggle-btn" data-pct="5" type="button">5%</button>
-        </div>
-        <div class="toggle-hint">Percentage of total affected population funded by CRF</div>
-      </div>
+      <label class="section-label" for="target-pop">Step 2 — IRC Target Population</label>
+      <input
+        type="text"
+        id="target-pop"
+        class="number-input"
+        inputmode="numeric"
+        placeholder="Auto-calculated (10%)"
+        autocomplete="off"
+      />
+      <div class="input-hint" id="target-hint">Defaults to 10% of affected population — adjust based on operational access and feasibility</div>
     </div>
 
     <div class="section-divider"></div>
 
-    <!-- Output -->
+    <!-- Step 3: CRF Commitment -->
     <div class="calc-section">
-      <div class="output-card">
-        <div class="output-label" id="output-label">Funding Estimate</div>
-        <div class="output-amount" id="output-amount">
-          <span class="output-placeholder">Enter inputs above</span>
+      <div class="section-label">Step 3 — CRF Commitment Level</div>
+
+      <!-- Total funding card (dark top) -->
+      <div class="total-cost-card" id="total-cost-card">
+        <div class="total-cost-label">Total Funding Needed</div>
+        <div class="total-cost-amount" id="total-cost-amount">
+          <span class="total-cost-placeholder">Enter affected population above</span>
         </div>
-        <div class="output-meta" id="output-meta" style="display: none;">
-          <div class="output-meta-row">
-            <span class="output-meta-label">People served</span>
-            <span class="output-meta-value" id="output-people">—</span>
+        <div class="total-cost-sub" id="total-cost-sub" style="display: none;">
+          To serve <strong id="total-cost-people">—</strong> people at $47.34 per person
+        </div>
+      </div>
+
+      <!-- Commitment card (white bottom) — hidden until inputs provided -->
+      <div class="commitment-card" id="commitment-card" style="display: none;">
+
+        <!-- Ratio selector -->
+        <div class="selector-label">The Crisis Response Fund contributes $1 in every</div>
+
+        <div class="ratio-buttons" id="ratio-buttons">
+          <button class="ratio-btn" data-ratio="10" type="button">
+            <div class="ratio-btn-dollar">$</div>
+            <div class="ratio-btn-num">10</div>
+          </button>
+          <button class="ratio-btn" data-ratio="7" type="button">
+            <div class="ratio-btn-dollar">$</div>
+            <div class="ratio-btn-num">7</div>
+          </button>
+          <button class="ratio-btn" data-ratio="5" type="button">
+            <div class="ratio-btn-dollar">$</div>
+            <div class="ratio-btn-num">5</div>
+          </button>
+          <button class="ratio-btn selected" data-ratio="3" type="button">
+            <div class="ratio-btn-dollar">$</div>
+            <div class="ratio-btn-num">3</div>
+          </button>
+        </div>
+
+        <!-- Split bar -->
+        <div class="split-bar">
+          <div class="split-bar-crf" id="split-bar-crf" style="width: 33.3%;"></div>
+          <div class="split-bar-donor"></div>
+        </div>
+
+        <!-- Dollar amounts -->
+        <div class="funding-split">
+          <div class="funding-col">
+            <div class="funding-col-label">CRF Commitment</div>
+            <div class="funding-col-value" id="crf-amount">—</div>
           </div>
-          <div class="output-meta-row">
-            <span class="output-meta-label">Cost per client</span>
-            <span class="output-meta-value">$47.34</span>
+          <div class="funding-col">
+            <div class="funding-col-label">External Fundraising</div>
+            <div class="funding-col-value donor-value" id="donor-amount">—</div>
           </div>
         </div>
+
+      </div>
+
+      <!-- Empty state -->
+      <div class="commitment-empty" id="commitment-empty">
+        Enter an affected population to see funding options
       </div>
     </div>
 
@@ -499,12 +549,17 @@
       <div class="footer-methodology">
         <h2>Methodology</h2>
         <p>
-          This calculator estimates funding allocations using the IRC's standard per-client cost
-          of $47.34, representing the average direct program cost per person served across IRC
-          emergency responses. Two calculation methods are available: <strong>Target Population</strong>
-          lets you specify the number of people to serve (defaulting to 10% of the affected
-          population), while <strong>CRF Allocation %</strong> calculates based on 1–5% of the
-          total affected population. All figures are rounded to the nearest $100.
+          This calculator estimates CRF funding allocations using the IRC's standard per-client cost
+          of <strong>$47.34</strong>, representing the average direct program cost per person served across IRC
+          emergency responses. The IRC target population defaults to 10% of the affected population,
+          adjustable based on operational access and feasibility.
+        </p>
+        <p>
+          Funding ratios show what IRC commits from its Crisis Response Fund relative to total need.
+          The recommended target is <strong>$1 in every $3</strong> — for every $3 of total funding
+          needed, IRC leads with $1 from CRF. This signals serious institutional investment and
+          strengthens the case for external donor funding to close the gap.
+          All figures are rounded to the nearest $100.
         </p>
       </div>
       <div class="footer-legal">
@@ -516,27 +571,29 @@
   <script>
     (function () {
       var PER_CLIENT_COST = 47.34;
+      var DEFAULT_RATIO = 3;
 
       // DOM refs
       var affectedInput = document.getElementById('affected-pop');
       var targetInput = document.getElementById('target-pop');
       var targetHint = document.getElementById('target-hint');
-      var outputLabel = document.getElementById('output-label');
-      var outputAmount = document.getElementById('output-amount');
-      var outputMeta = document.getElementById('output-meta');
-      var outputPeople = document.getElementById('output-people');
-      var tabTarget = document.getElementById('tab-target');
-      var tabCrf = document.getElementById('tab-crf');
-      var panelTarget = document.getElementById('panel-target');
-      var panelCrf = document.getElementById('panel-crf');
-      var toggleBtns = document.querySelectorAll('.toggle-btn');
+      var totalCostAmount = document.getElementById('total-cost-amount');
+      var totalCostSub = document.getElementById('total-cost-sub');
+      var totalCostPeople = document.getElementById('total-cost-people');
+      var totalCostCard = document.getElementById('total-cost-card');
+      var commitmentCard = document.getElementById('commitment-card');
+      var commitmentEmpty = document.getElementById('commitment-empty');
+      var ratioButtons = document.querySelectorAll('.ratio-btn');
+      var splitBarCrf = document.getElementById('split-bar-crf');
+      var crfAmountEl = document.getElementById('crf-amount');
+      var donorAmountEl = document.getElementById('donor-amount');
 
       // State
       var affectedPop = 0;
       var targetPop = 0;
       var targetManuallyEdited = false;
-      var selectedPct = 0;
-      var activeMode = 'target'; // 'target' or 'crf'
+      var selectedRatio = DEFAULT_RATIO;
+      var totalCost = 0;
 
       // ── Helpers ──
       function formatNum(n) {
@@ -578,30 +635,10 @@
         return num;
       }
 
-      // ── Mode switching ──
-      function setMode(mode) {
-        activeMode = mode;
-
-        tabTarget.classList.toggle('active', mode === 'target');
-        tabCrf.classList.toggle('active', mode === 'crf');
-        panelTarget.classList.toggle('active', mode === 'target');
-        panelCrf.classList.toggle('active', mode === 'crf');
-
-        outputLabel.textContent = mode === 'target'
-          ? 'Target Population Funding'
-          : 'CRF Allocation Amount';
-
-        calculate();
-      }
-
-      tabTarget.addEventListener('click', function () { setMode('target'); });
-      tabCrf.addEventListener('click', function () { setMode('crf'); });
-
       // ── Affected population ──
       affectedInput.addEventListener('input', function () {
         affectedPop = formatInput(this);
 
-        // Auto-fill target if not manually edited
         if (!targetManuallyEdited && affectedPop > 0) {
           targetPop = Math.round(affectedPop * 0.1);
           targetInput.value = formatNum(targetPop);
@@ -626,50 +663,60 @@
         if (affectedPop > 0 && targetPop > 0) {
           var pct = (targetPop / affectedPop) * 100;
           var pctStr = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
-          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected population';
+          targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected population — adjust based on operational access and feasibility';
         } else {
-          targetHint.textContent = 'Defaults to 10% of affected population';
+          targetHint.textContent = 'Defaults to 10% of affected population — adjust based on operational access and feasibility';
         }
       }
 
-      // ── CRF % toggle ──
-      toggleBtns.forEach(function (btn) {
+      // ── Ratio buttons ──
+      ratioButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
-          toggleBtns.forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          selectedPct = parseInt(btn.getAttribute('data-pct'), 10);
-          calculate();
+          ratioButtons.forEach(function (b) { b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          selectedRatio = parseInt(btn.getAttribute('data-ratio'), 10);
+          updateCommitment();
         });
       });
 
+      // ── Update commitment display ──
+      function updateCommitment() {
+        if (totalCost <= 0) return;
+
+        var frac = 1 / selectedRatio;
+        var crfAmount = roundToNearest100(totalCost * frac);
+        var donorAmount = totalCost - crfAmount;
+
+        splitBarCrf.style.width = (frac * 100).toFixed(1) + '%';
+        crfAmountEl.textContent = formatCurrency(crfAmount);
+        donorAmountEl.textContent = formatCurrency(donorAmount);
+      }
+
       // ── Calculate ──
       function calculate() {
-        var people = 0;
-
-        if (activeMode === 'target') {
-          people = targetPop;
-        } else {
-          if (affectedPop > 0 && selectedPct > 0) {
-            people = Math.round(affectedPop * (selectedPct / 100));
-          }
+        if (targetPop <= 0) {
+          totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Enter affected population above</span>';
+          totalCostSub.style.display = 'none';
+          commitmentCard.style.display = 'none';
+          commitmentEmpty.style.display = 'block';
+          totalCostCard.style.borderRadius = '12px';
+          totalCost = 0;
+          return;
         }
 
-        if (people > 0) {
-          var rawAmount = people * PER_CLIENT_COST;
-          var amount = roundToNearest100(rawAmount);
+        totalCost = roundToNearest100(targetPop * PER_CLIENT_COST);
 
-          outputAmount.classList.add('updating');
-          setTimeout(function () {
-            outputAmount.textContent = formatCurrency(amount);
-            outputAmount.classList.remove('updating');
-          }, 150);
+        // Update total cost display
+        totalCostAmount.textContent = formatCurrency(totalCost);
+        totalCostPeople.textContent = formatNum(targetPop);
+        totalCostSub.style.display = 'block';
 
-          outputPeople.textContent = formatNum(people);
-          outputMeta.style.display = 'flex';
-        } else {
-          outputAmount.innerHTML = '<span class="output-placeholder">Enter inputs above</span>';
-          outputMeta.style.display = 'none';
-        }
+        // Show commitment card
+        commitmentCard.style.display = 'block';
+        commitmentEmpty.style.display = 'none';
+        totalCostCard.style.borderRadius = '12px 12px 0 0';
+
+        updateCommitment();
       }
     })();
   </script>
