@@ -98,6 +98,48 @@
       margin-bottom: 32px;
     }
 
+    /* ── Country selector ── */
+    .country-select {
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--black);
+      background: var(--light-gray);
+      border: 2px solid var(--mid-gray);
+      border-radius: 8px;
+      padding: 14px 20px;
+      transition: border-color 0.15s ease;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 44px;
+    }
+
+    .country-select:focus {
+      outline: none;
+      border-color: var(--irc-yellow);
+      background-color: var(--white);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23383838' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    .country-meta {
+      margin-top: 8px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .country-meta span {
+      font-weight: 600;
+      color: var(--dark-gray);
+    }
+
     /* ── Input fields ── */
     .number-input {
       width: 100%;
@@ -316,6 +358,33 @@
       color: var(--dark-gray);
     }
 
+    .stance-auto-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--irc-yellow-lightest);
+      color: var(--dark-gray);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .stance-not-eligible {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: var(--light-gray);
+      border: 1px solid var(--mid-gray);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.4;
+      display: none;
+    }
+
     /* ── Total cost card (dark top) ── */
     .total-cost-card {
       background: var(--black);
@@ -414,7 +483,7 @@
     }
 
     .coverage-btn-num {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--black);
@@ -723,6 +792,17 @@
   <!-- Calculator -->
   <main>
 
+    <!-- Country selector -->
+    <div class="calc-section">
+      <div class="section-label">Emergency Country</div>
+      <select class="country-select" id="country-select">
+        <option value="">Select a country…</option>
+      </select>
+      <div class="country-meta" id="country-meta"></div>
+    </div>
+
+    <div class="section-divider"></div>
+
     <!-- Population inputs -->
     <div class="calc-section">
       <div class="section-label">Affected Population &amp; IRC Target</div>
@@ -761,14 +841,15 @@
       <div class="stance-buttons" id="stance-buttons">
         <button class="stance-btn" data-stance="orange" type="button">
           <div class="stance-btn-name">Orange</div>
-          <div class="stance-btn-sub">Severity 5–7</div>
+          <div class="stance-btn-sub">Ceiling: $1M</div>
         </button>
         <button class="stance-btn" data-stance="red" type="button">
           <div class="stance-btn-name">Red</div>
-          <div class="stance-btn-sub">Severity 8–10</div>
+          <div class="stance-btn-sub">Ceiling: $2M</div>
         </button>
       </div>
       <div class="stance-hint" id="stance-hint">Select the emergency response stance to set the allocation ceiling.</div>
+      <div class="stance-not-eligible" id="stance-not-eligible">Based on the affected population and country profile, this emergency would be classified <strong>Yellow or White</strong>, which does not qualify for CRF allocation. You can override this by selecting a stance above.</div>
     </div>
 
     <div class="section-divider"></div>
@@ -779,12 +860,12 @@
 
       <!-- Total funding card (dark top) -->
       <div class="total-cost-card" id="total-cost-card">
-        <div class="total-cost-label">Total Funding Needed (6 months)</div>
+        <div class="total-cost-label" id="total-cost-label">Total funding needed to serve 10% of the affected population (6 months)</div>
         <div class="total-cost-amount" id="total-cost-amount">
           <span class="total-cost-placeholder">Enter affected population above</span>
         </div>
         <div class="total-cost-sub" id="total-cost-sub" style="display: none;">
-          To serve <strong id="total-cost-people">—</strong> people at $47.34 per person
+          <strong id="total-cost-people">—</strong> people &times; $47.34 per person over 6 months
         </div>
       </div>
 
@@ -792,26 +873,26 @@
       <div class="allocation-card" id="allocation-card" style="display: none;">
 
         <!-- Coverage selector -->
-        <div class="selector-label">The Crisis Response Fund serves</div>
+        <div class="selector-label">CRF funds programming for</div>
 
         <div class="coverage-buttons" id="coverage-buttons">
-          <button class="coverage-btn" data-coverage="1" type="button">
-            <div class="coverage-btn-num">1</div>
-            <div class="coverage-btn-label">in 10 people targeted</div>
+          <button class="coverage-btn selected" data-coverage="1" type="button">
+            <div class="coverage-btn-num">1%</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
           <button class="coverage-btn" data-coverage="2" type="button">
-            <div class="coverage-btn-num">2</div>
-            <div class="coverage-btn-label">in 10 people targeted</div>
+            <div class="coverage-btn-num">2%</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
-          <button class="coverage-btn selected" data-coverage="3" type="button">
-            <div class="coverage-btn-num">3</div>
-            <div class="coverage-btn-label">in 10 people targeted</div>
+          <button class="coverage-btn" data-coverage="3" type="button">
+            <div class="coverage-btn-num">3%</div>
+            <div class="coverage-btn-label">of affected people</div>
           </button>
         </div>
 
         <!-- Split bar -->
         <div class="split-bar">
-          <div class="split-bar-crf" id="split-bar-crf" style="width: 30%;"></div>
+          <div class="split-bar-crf" id="split-bar-crf" style="width: 10%;"></div>
           <div class="split-bar-gap"></div>
         </div>
 
@@ -860,11 +941,10 @@
           adjustable based on operational access and feasibility.
         </p>
         <p>
-          Coverage options show how many of the IRC target population CRF can serve directly.
-          The recommended target is <strong>3 in 10 people targeted</strong> — for every 10 people the IRC
-          aims to reach, CRF funds the response for 3. The remaining gap represents
-          the external fundraising required to reach the full target.
-          All figures are rounded to the nearest $100.
+          Coverage options represent the percentage of the total affected population that CRF funds directly,
+          from <strong>1%</strong> up to <strong>3%</strong> of affected people. The remaining gap represents
+          the external fundraising required to reach the IRC's 10% response goal.
+          All figures are rounded to the nearest $25,000.
         </p>
       </div>
       <div class="footer-legal">
@@ -876,18 +956,36 @@
   <script>
     (function () {
       var PER_CLIENT_COST = 47.34;
-      var DEFAULT_COVERAGE = 3; // 3 in every 10
+      var DEFAULT_COVERAGE = 1;
 
-      // Ceilings by response stance
-      var STANCE_CEILINGS = {
-        orange: 1000000,
-        red: 2000000
-      };
+      var STANCE_CEILINGS = { orange: 1000000, red: 2000000 };
 
-      // DOM refs
+      // ── Severity thresholds: affected population ──
+      var AFFECTED_THRESHOLDS = [
+        [500, 1], [23000, 2], [88000, 3], [160000, 4], [330000, 5],
+        [550000, 6], [1000000, 7], [1800000, 8], [2500000, 9], [4000000, 10]
+      ];
+
+      // ── Severity thresholds: proportion affected (affected / country pop) ──
+      var PROPORTION_THRESHOLDS = [
+        [0.0002, 1], [0.0009, 2], [0.001, 3], [0.0021, 4], [0.008, 5],
+        [0.0131, 6], [0.03, 7], [0.078, 8], [0.14, 9], [0.2, 10]
+      ];
+
+      // ── Stance matrix: [severity][preVuln][robustness] → stance ──
+      // Extracted from IRC Classification Worksheet (Conflict type)
+      var STANCE_MATRIX = {"1":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"2":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"3":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"4":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"5":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"6":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"4":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"orange"}},"7":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"orange","2":"orange","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"yellow"},"4":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"orange"}},"8":{"1":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"3":{"0":"red","1":"red","2":"red","3":"orange","4":"orange","5":"orange"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"orange","5":"orange"}},"9":{"1":{"0":"red","1":"red","2":"red","3":"orange","4":"orange","5":"orange"},"2":{"0":"red","1":"red","2":"red","3":"red","4":"orange","5":"orange"},"3":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"orange"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"}},"10":{"1":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"orange"},"2":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"},"3":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"}}};
+
+      // ── Country data: [name, countryPop, preVuln, robustness] ──
+      var COUNTRIES = [["Afghanistan",42647492,4,5],["Albania",2377128,2,0],["Algeria",46814308,3,0],["Angola",37885849,4,0],["Antigua and Barbuda",93772,2,0],["Argentina",45696159,2,0],["Armenia",3033500,2,0],["Australia",27196812,1,0],["Austria",9177982,1,0],["Azerbaijan",10202830,2,0],["Bahamas",401283,1,0],["Bahrain",1588670,1,0],["Bangladesh",173562364,3,3],["Barbados",282467,2,0],["Belarus",9132629,2,0],["Belgium",11858610,1,0],["Belize",417072,3,0],["Benin",14462724,4,0],["Bhutan",791524,3,0],["Bolivia (Plurinational State of)",12388571,3,0],["Bosnia and Herzegovina",3180740,2,0],["Botswana",2675352,2,0],["Brazil",216422446,2,0],["Brunei Darussalam",452524,1,0],["Bulgaria",6687717,2,0],["Burkina Faso",23251736,4,2],["Burundi",13238559,4,2],["Cabo Verde",598682,2,0],["Cambodia",17638592,3,0],["Cameroon",28647293,4,3],["Central African Republic",5742315,4,3],["Chad",18278568,4,4],["Chile",19764771,1,0],["China",1425178782,2,0],["Colombia",52085168,2,3],["Comoros",852075,3,0],["Congo",6106869,3,0],["Costa Rica",5212173,2,0],["Croatia",3850894,1,0],["Cuba",11194449,2,0],["Cyprus",1358476,1,0],["Czech Republic",10827529,1,1],["Côte d'Ivoire",28873034,4,4],["Democratic People's Republic of Korea",26160821,3,0],["Democratic Republic of the Congo",102262808,4,3],["Denmark",5910913,1,0],["Djibouti",1120849,3,0],["Dominican Republic",11228370,2,0],["Ecuador",18135463,2,3],["Egypt",112716598,3,0],["El Salvador",6364943,2,2],["Equatorial Guinea",1714671,3,0],["Eritrea",3748901,4,0],["Estonia",1373101,1,0],["Eswatini",1201670,3,0],["Ethiopia",126527060,4,5],["Fiji",936375,2,0],["Finland",5617310,1,0],["France",64756584,1,0],["Gabon",2436566,2,0],["Gambia",2773168,3,0],["Georgia",3728282,2,0],["Germany",84482267,1,2],["Ghana",34121985,3,0],["Greece",10341277,1,2],["Guatemala",18092026,3,2],["Guinea",14190612,4,0],["Guinea-Bissau",2150842,4,0],["Guyana",813834,2,0],["Haiti",11724763,4,1],["Honduras",10593798,3,2],["Hungary",10156239,1,1],["Iceland",393396,1,0],["India",1428627663,3,0],["Indonesia",277534122,3,0],["Iran (Islamic Republic of)",89172767,3,0],["Iraq",45504560,3,3],["Ireland",5255017,1,0],["Israel",9174520,1,0],["Italy",58761146,1,2],["Jamaica",2825544,2,0],["Japan",123294513,1,0],["Jordan",11337052,2,4],["Kazakhstan",19606633,2,0],["Kenya",55100586,3,5],["Kiribati",131232,2,0],["Kuwait",4310108,1,0],["Kyrgyzstan",6974998,2,0],["Lao People's Democratic Republic",7529475,3,0],["Latvia",1830211,1,0],["Lebanon",5489739,2,4],["Lesotho",2330318,3,0],["Liberia",5418377,4,2],["Libya",6888388,2,2],["Lithuania",2718352,1,0],["Luxembourg",660809,1,0],["Madagascar",30325732,4,0],["Malawi",20931751,4,0],["Malaysia",34308525,2,1],["Maldives",521457,2,0],["Mali",23293698,4,4],["Malta",535064,1,0],["Marshall Islands",41996,2,0],["Mauritania",4862989,4,0],["Mauritius",1300557,2,0],["Mexico",128455567,2,2],["Micronesia (Federated States of)",114164,2,0],["Moldova (Republic of)",3435931,2,0],["Mongolia",3447157,2,0],["Montenegro",626485,2,0],["Morocco",37840044,3,0],["Mozambique",33897354,4,0],["Myanmar",54577997,3,5],["Namibia",2604172,3,0],["Nauru",12780,2,0],["Nepal",30896590,3,0],["Netherlands",17879327,1,0],["New Zealand",5228100,1,0],["Nicaragua",7046310,3,0],["Niger",27202843,4,4],["Nigeria",223804632,4,5],["North Macedonia",2093599,2,0],["Norway",5474360,1,0],["Oman",4644384,1,0],["Pakistan",240485658,4,5],["Palau",18055,1,0],["Panama",4408581,2,0],["Papua New Guinea",10329931,3,0],["Paraguay",6861524,2,0],["Peru",34352719,2,3],["Philippines",117337368,3,1],["Poland",41026067,1,1],["Portugal",10247605,1,0],["Qatar",2716391,1,0],["Romania",19892812,2,1],["Russian Federation",144236933,2,0],["Rwanda",14094683,3,0],["Saint Lucia",180251,2,0],["Saint Vincent and the Grenadines",103698,2,0],["Samoa",225681,2,0],["Sao Tome and Principe",231856,3,0],["Saudi Arabia",36947025,1,0],["Senegal",17763163,3,0],["Serbia",7149077,2,2],["Sierra Leone",8791092,4,2],["Singapore",6014723,1,0],["Slovakia",5795199,1,1],["Slovenia",2119675,1,0],["Solomon Islands",740424,3,0],["Somalia",18143378,4,4],["South Africa",60414495,3,0],["South Sudan",11088796,4,5],["Spain",47519628,1,0],["Sri Lanka",21893579,2,0],["State of Palestine",5371230,4,1],["Sudan",48109006,4,3],["Suriname",623236,2,0],["Sweden",10612086,1,0],["Switzerland",8796669,1,0],["Syrian Arab Republic",24672760,3,4],["Tajikistan",10143543,3,0],["Thailand",71801279,2,3],["Timor-Leste",1360596,3,0],["Togo",9053799,4,0],["Tonga",107773,2,0],["Trinidad and Tobago",1534937,2,0],["Tunisia",12458223,2,1],["Turkey",85816199,2,1],["Turkmenistan",6516100,3,0],["Tuvalu",11312,2,0],["Uganda",48582334,4,5],["Ukraine",37000000,2,3],["United Arab Emirates",9441129,1,0],["United Kingdom",67736802,1,0],["United Republic of Tanzania",67438106,4,4],["United States of America",339996563,1,0],["Uruguay",3423108,1,0],["Uzbekistan",35163944,2,0],["Vanuatu",326740,2,0],["Venezuela (Bolivarian Republic of)",28838499,3,3],["Viet Nam",98858950,2,0],["Yemen",34449825,4,2],["Zambia",20569737,3,0],["Zimbabwe",16665409,3,2]];
+
+      // ── DOM refs ──
+      var countrySelect = document.getElementById('country-select');
+      var countryMeta = document.getElementById('country-meta');
       var affectedInput = document.getElementById('affected-pop');
       var targetInput = document.getElementById('target-pop');
       var targetHint = document.getElementById('target-hint');
+      var totalCostLabel = document.getElementById('total-cost-label');
       var totalCostAmount = document.getElementById('total-cost-amount');
       var totalCostSub = document.getElementById('total-cost-sub');
       var totalCostPeople = document.getElementById('total-cost-people');
@@ -903,70 +1001,109 @@
       var ceilingWarning = document.getElementById('ceiling-warning');
       var stanceButtons = document.querySelectorAll('.stance-btn');
       var stanceHint = document.getElementById('stance-hint');
+      var stanceNotEligible = document.getElementById('stance-not-eligible');
 
-      // State
+      // ── State ──
+      var selectedCountry = null; // {name, pop, pv, rob}
       var affectedPop = 0;
       var targetPop = 0;
       var targetManuallyEdited = false;
       var selectedCoverage = DEFAULT_COVERAGE;
-      var selectedStance = null; // 'orange' or 'red'
+      var selectedStance = null;
+      var stanceManuallyOverridden = false;
       var totalCost = 0;
 
+      // ── Populate country dropdown ──
+      COUNTRIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+      COUNTRIES.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c[0];
+        opt.textContent = c[0];
+        countrySelect.appendChild(opt);
+      });
+
       // ── Helpers ──
-      function formatNum(n) {
-        return n.toLocaleString('en-US');
+      function formatNum(n) { return n.toLocaleString('en-US'); }
+      function formatCurrency(n) { return '$' + n.toLocaleString('en-US'); }
+      function roundToNearest25K(n) { return Math.round(n / 25000) * 25000; }
+
+      function getSeverity(affected, countryPop) {
+        var sevAffected = 0;
+        for (var i = AFFECTED_THRESHOLDS.length - 1; i >= 0; i--) {
+          if (affected >= AFFECTED_THRESHOLDS[i][0]) { sevAffected = AFFECTED_THRESHOLDS[i][1]; break; }
+        }
+        var sevProportion = 0;
+        if (countryPop > 0) {
+          var proportion = affected / countryPop;
+          for (var j = PROPORTION_THRESHOLDS.length - 1; j >= 0; j--) {
+            if (proportion >= PROPORTION_THRESHOLDS[j][0]) { sevProportion = PROPORTION_THRESHOLDS[j][1]; break; }
+          }
+        }
+        return Math.max(sevAffected, sevProportion);
       }
 
-      function formatCurrency(n) {
-        return '$' + n.toLocaleString('en-US');
-      }
-
-      function roundToNearest100(n) {
-        return Math.round(n / 100) * 100;
+      function lookupStance(severity, pv, rob) {
+        if (severity < 1) return 'white';
+        var sevKey = String(Math.min(severity, 10));
+        var pvKey = String(Math.max(1, Math.min(pv, 4)));
+        var robKey = String(Math.max(0, Math.min(rob, 5)));
+        var sevMatrix = STANCE_MATRIX[sevKey];
+        if (!sevMatrix) return 'white';
+        var pvMatrix = sevMatrix[pvKey];
+        if (!pvMatrix) return 'white';
+        return pvMatrix[robKey] || 'white';
       }
 
       function formatInput(input) {
         var raw = input.value.replace(/[^0-9]/g, '');
-        if (raw === '') {
-          input.value = '';
-          return 0;
-        }
+        if (raw === '') { input.value = ''; return 0; }
         var num = parseInt(raw, 10);
         var selStart = input.selectionStart;
         var beforeCursor = input.value.substring(0, selStart).replace(/[^0-9]/g, '').length;
-
         input.value = formatNum(num);
-
-        var digitCount = 0;
-        var newPos = 0;
+        var digitCount = 0, newPos = 0;
         for (var i = 0; i < input.value.length; i++) {
           if (/[0-9]/.test(input.value[i])) digitCount++;
-          if (digitCount === beforeCursor) {
-            newPos = i + 1;
-            break;
-          }
+          if (digitCount === beforeCursor) { newPos = i + 1; break; }
         }
         if (beforeCursor === 0) newPos = 0;
         input.setSelectionRange(newPos, newPos);
-
         return num;
       }
 
       function formatTargetInput(input) {
         var raw = input.value.replace(/[^0-9]/g, '');
-        if (raw === '') {
-          input.value = '';
-          return 0;
-        }
+        if (raw === '') { input.value = ''; return 0; }
         var num = parseInt(raw, 10);
         input.value = formatNum(num);
         return num;
       }
 
+      // ── Country selection ──
+      countrySelect.addEventListener('change', function () {
+        var name = this.value;
+        selectedCountry = null;
+        if (name) {
+          for (var i = 0; i < COUNTRIES.length; i++) {
+            if (COUNTRIES[i][0] === name) {
+              selectedCountry = { name: COUNTRIES[i][0], pop: COUNTRIES[i][1], pv: COUNTRIES[i][2], rob: COUNTRIES[i][3] };
+              break;
+            }
+          }
+        }
+        if (selectedCountry) {
+          countryMeta.innerHTML = 'Population: <span>' + formatNum(selectedCountry.pop) + '</span> · Pre-crisis vulnerability: <span>' + selectedCountry.pv + '</span> · Robustness: <span>' + selectedCountry.rob + '</span>';
+        } else {
+          countryMeta.innerHTML = '';
+        }
+        stanceManuallyOverridden = false;
+        updateAutoStance();
+        calculate();
+      });
+
       // ── Affected population ──
       affectedInput.addEventListener('input', function () {
         affectedPop = formatInput(this);
-
         if (!targetManuallyEdited && affectedPop > 0) {
           targetPop = Math.round(affectedPop * 0.1);
           targetInput.value = formatNum(targetPop);
@@ -974,7 +1111,7 @@
           targetPop = 0;
           targetInput.value = '';
         }
-
+        if (!stanceManuallyOverridden) updateAutoStance();
         updateTargetHint();
         calculate();
       });
@@ -992,17 +1129,56 @@
           var pct = (targetPop / affectedPop) * 100;
           var pctStr = pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
           targetHint.innerHTML = '<strong>' + pctStr + '%</strong> of affected pop.';
+          totalCostLabel.textContent = 'Total funding needed to serve ' + pctStr + '% of the affected population (6 months)';
         } else {
           targetHint.textContent = 'Defaults to 10% — editable';
+          totalCostLabel.textContent = 'Total funding needed to serve 10% of the affected population (6 months)';
         }
       }
 
-      // ── Stance buttons ──
+      // ── Auto stance from matrix ──
+      function updateAutoStance() {
+        stanceNotEligible.style.display = 'none';
+
+        if (!selectedCountry || affectedPop <= 0) {
+          if (!stanceManuallyOverridden) {
+            selectedStance = null;
+            stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+            stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          }
+          return;
+        }
+
+        var severity = getSeverity(affectedPop, selectedCountry.pop);
+        var autoStance = lookupStance(severity, selectedCountry.pv, selectedCountry.rob);
+
+        if (autoStance === 'orange' || autoStance === 'red') {
+          selectedStance = autoStance;
+          stanceButtons.forEach(function (b) {
+            b.classList.toggle('selected', b.getAttribute('data-stance') === autoStance);
+          });
+          var ceiling = STANCE_CEILINGS[selectedStance];
+          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
+          stanceHint.innerHTML = '<strong>' + autoStance.charAt(0).toUpperCase() + autoStance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
+          stanceNotEligible.style.display = 'none';
+        } else {
+          // White or Yellow — not CRF eligible
+          selectedStance = null;
+          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
+          stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          stanceNotEligible.style.display = 'block';
+          stanceNotEligible.innerHTML = 'Based on the affected population and country profile, this emergency would not typically qualify for CRF allocation. You can override this by selecting a stance above.';
+        }
+      }
+
+      // ── Stance buttons (manual override) ──
       stanceButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
+          stanceManuallyOverridden = true;
           stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
           btn.classList.add('selected');
           selectedStance = btn.getAttribute('data-stance');
+          stanceNotEligible.style.display = 'none';
 
           var ceiling = STANCE_CEILINGS[selectedStance];
           var ceilingStr = '$' + (ceiling / 1000000) + 'M';
@@ -1025,23 +1201,20 @@
       // ── Update allocation display ──
       function updateAllocation() {
         if (totalCost <= 0) return;
+        // selectedCoverage is 1, 2, or 3 (percent of affected pop)
+        // which equals 10%, 20%, or 30% of the target pop (10% of affected)
+        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
+        var gapPeople = Math.max(0, targetPop - crfPeople);
+        var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
+        var gapAmount = Math.max(0, totalCost - crfAmount);
 
-        var fraction = selectedCoverage / 10;
-        var crfPeople = Math.round(targetPop * fraction);
-        var gapPeople = targetPop - crfPeople;
-        var crfAmount = roundToNearest100(crfPeople * PER_CLIENT_COST);
-        var gapAmount = totalCost - crfAmount;
-
-        // Update split bar
-        splitBarCrf.style.width = (fraction * 100).toFixed(1) + '%';
-
-        // Update results
+        var barPercent = targetPop > 0 ? (crfPeople / targetPop) * 100 : 0;
+        splitBarCrf.style.width = Math.min(barPercent, 100).toFixed(1) + '%';
         crfPeopleEl.textContent = formatNum(crfPeople);
         crfAmountEl.textContent = formatCurrency(crfAmount);
         gapPeopleEl.textContent = formatNum(gapPeople);
         gapAmountEl.textContent = formatCurrency(gapAmount);
 
-        // Ceiling warning based on stance
         var ceiling = selectedStance ? STANCE_CEILINGS[selectedStance] : 2000000;
         var ceilingStr = '$' + (ceiling / 1000000) + 'M';
         if (crfAmount > ceiling) {
@@ -1057,6 +1230,8 @@
         if (targetPop <= 0 || !selectedStance) {
           if (targetPop <= 0) {
             totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Enter affected population above</span>';
+          } else if (!selectedCountry) {
+            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a country above</span>';
           } else {
             totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a response stance</span>';
           }
@@ -1066,7 +1241,6 @@
           totalCostCard.style.borderRadius = '12px';
           totalCost = 0;
 
-          // Update empty state message
           if (targetPop > 0 && !selectedStance) {
             allocationEmpty.textContent = 'Select a response stance to see allocation options';
           } else {
@@ -1075,14 +1249,11 @@
           return;
         }
 
-        totalCost = roundToNearest100(targetPop * PER_CLIENT_COST);
-
-        // Update total cost display
+        totalCost = roundToNearest25K(targetPop * PER_CLIENT_COST);
         totalCostAmount.textContent = formatCurrency(totalCost);
         totalCostPeople.textContent = formatNum(targetPop);
         totalCostSub.style.display = 'block';
 
-        // Show allocation card
         allocationCard.style.display = 'block';
         allocationEmpty.style.display = 'none';
         totalCostCard.style.borderRadius = '12px 12px 0 0';
