@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRF Allocation Calculator — IRC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -14,13 +17,15 @@
     :root {
       --irc-yellow: #FFC72C;
       --irc-yellow-light: #FFD44B;
-      --irc-yellow-lightest: #FFF4D6;
+      --irc-yellow-mid: #FFD960;
+      --irc-yellow-lightest: #FFF8E5;
       --black: #000000;
       --white: #FFFFFF;
       --light-gray: #F6F6F6;
+      --gray-e9: #E9E9E9;
       --mid-gray: #D1D1D1;
       --dark-gray: #383838;
-      --muted: #6B6B6B;
+      --muted: #666666;
       --warning: #C4421A;
     }
 
@@ -30,43 +35,76 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 400;
       line-height: 1.4;
       color: var(--black);
-      background: var(--white);
+      background: var(--light-gray);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ── Header ── */
+    /* ── Shared Platform Header ── */
     header {
-      background: var(--white);
-      border-bottom: 3px solid var(--black);
-      padding: 20px 24px;
+      background: var(--black);
+      border-bottom: 4px solid var(--irc-yellow);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-
     .header-inner {
-      max-width: 720px;
+      max-width: 1280px;
       margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
+      height: 60px;
     }
+    .logo-container { display: flex; align-items: center; flex-shrink: 0; }
+    .logo-container svg { height: 36px; width: auto; display: block; }
+    .header-brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; text-decoration: none; }
+    .header-title { font-size: 1rem; font-weight: 700; letter-spacing: -0.04em; color: var(--white); line-height: 1.2; }
+    .header-subtitle { font-size: 0.6875rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--irc-yellow); margin-top: 2px; }
+    .header-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .header-nav a { padding: 8px 14px; border-radius: 6px; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid-gray); text-decoration: none; transition: all 0.12s ease; }
+    .header-nav a:hover { color: var(--white); background: var(--dark-gray); }
+    .header-nav a.active { color: var(--black); background: var(--irc-yellow); border-radius: 6px; }
+    .header-nav a.ask-albert-btn { display: flex; align-items: center; gap: 6px; color: var(--irc-yellow); background: transparent; border: 1.5px solid var(--irc-yellow); margin-left: 8px; }
+    .header-nav a.ask-albert-btn:hover { background: var(--irc-yellow); color: var(--black); }
+    .header-nav a.ask-albert-btn.active { background: var(--irc-yellow); color: var(--black); }
+    .header-nav a.ask-albert-btn svg { flex-shrink: 0; }
 
-    .logo-container svg {
-      height: 40px;
-      width: auto;
-      display: block;
-    }
+    /* ── Site Switcher ── */
+    .site-switcher { position: relative; margin-right: 12px; flex-shrink: 0; }
+    .site-switcher-toggle { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--dark-gray); border-radius: 6px; background: transparent; color: var(--mid-gray); font-family: inherit; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: all 0.15s ease; }
+    .site-switcher-toggle:hover { color: var(--white); border-color: var(--muted); }
+    .site-switcher-chevron { transition: transform 0.2s ease; }
+    .site-switcher.open .site-switcher-chevron { transform: rotate(180deg); }
+    .site-switcher-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 260px; background: var(--white); border: 1px solid var(--gray-e9); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06); z-index: 200; overflow: hidden; }
+    .site-switcher.open .site-switcher-dropdown { display: block; }
+    .site-switcher-option { display: block; padding: 12px 16px; text-decoration: none; transition: background 0.12s ease; }
+    .site-switcher-option:hover { background: var(--light-gray); }
+    .site-switcher-option.active { background: var(--irc-yellow-lightest); border-left: 3px solid var(--irc-yellow); }
+    .site-switcher-option-name { display: block; font-size: 0.875rem; font-weight: 700; color: var(--black); line-height: 1.3; }
+    .site-switcher-option-desc { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px; line-height: 1.3; }
 
-    .header-title {
-      font-size: 1.125rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--black);
-      line-height: 1.2;
+    /* ── Mobile header ── */
+    .mobile-menu-btn { display: none; background: none; border: none; padding: 6px; cursor: pointer; margin-left: auto; }
+    .mobile-menu-btn svg { width: 24px; height: 24px; color: var(--white); }
+    .mobile-nav { display: none; }
+    .mobile-nav.open { display: flex; flex-direction: column; gap: 4px; padding: 12px 24px 16px; background: var(--dark-gray); }
+    .mobile-nav a { padding: 10px 14px; border-radius: 6px; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid-gray); text-decoration: none; transition: all 0.12s ease; }
+    .mobile-nav a:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+    .mobile-nav a.active { color: var(--black); background: var(--irc-yellow); }
+    .mobile-nav a.ask-albert-btn { display: flex; align-items: center; gap: 6px; color: var(--irc-yellow); background: transparent; border: 1.5px solid var(--irc-yellow); margin-top: 4px; }
+    .mobile-nav a.ask-albert-btn:hover { background: var(--irc-yellow); color: var(--black); }
+    .mobile-nav a.ask-albert-btn.active { background: var(--irc-yellow); color: var(--black); }
+
+    @media (max-width: 768px) {
+      .header-nav { display: none; }
+      .mobile-menu-btn { display: block; }
     }
 
     /* ── Main ── */
@@ -101,7 +139,7 @@
     /* ── Country selector ── */
     .country-select {
       width: 100%;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 1.125rem;
       font-weight: 600;
       color: var(--black);
@@ -143,7 +181,7 @@
     /* ── Input fields ── */
     .number-input {
       width: 100%;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.025em;
@@ -237,7 +275,7 @@
 
     .target-input {
       width: 100%;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.025em;
@@ -703,18 +741,6 @@
     }
 
     @media (max-width: 480px) {
-      .header-inner {
-        gap: 14px;
-      }
-
-      .logo-container svg {
-        height: 32px;
-      }
-
-      .header-title {
-        font-size: 1rem;
-      }
-
       main {
         padding: 24px 16px 40px;
       }
@@ -768,26 +794,7 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="header-inner">
-      <div class="logo-container">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="287 160 220 300" aria-label="International Rescue Committee logo">
-          <defs><style>.cls-1{fill:#ffc72c;}</style></defs>
-          <g>
-            <rect class="cls-1" x="287.52" y="163.66" width="216" height="288"/>
-            <g>
-              <path d="M322.31,422.88c-.12.32-.36.88-.84,1.46-.69.8-1.78,1.5-3.36,1.5-2.58,0-4.55-1.89-4.55-5.14s2.14-5.08,4.62-5.08c3.03,0,3.75,2.33,3.97,3l-1.82.48c-.03-.18-.11-.59-.36-.96-.21-.31-.75-.86-1.75-.86-1.58,0-2.69,1.31-2.69,3.39,0,2.22,1.17,3.45,2.7,3.45.91,0,1.46-.44,1.86-.96.32-.42.44-.78.51-1.01l1.71.72ZM338.46,425.84c-1.23,0-2.36-.34-3.35-1.49-.96-1.12-1.3-2.39-1.3-3.61,0-2.98,2.01-5.12,4.67-5.12,2.41,0,4.67,1.79,4.66,5.11-.01,2.79-1.7,5.11-4.69,5.11ZM338.48,417.28c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.22.04-1.9-.94-3.66-2.85-3.66ZM364.52,415.86v9.73h-1.78l.17-8-2.1,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM386.34,415.86v9.73h-1.78l.16-8-2.09,8h-1.64l-2.11-8,.18,8h-1.78v-9.73h2.65l1.9,7.22,1.86-7.22h2.65ZM400.95,415.86v9.73h-1.79v-9.73h1.79ZM420.17,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM438.54,417.52h-2.69v8.08h-1.82v-8.08h-2.63v-1.65h7.14v1.65ZM452.33,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM471.57,417.49v2.29h4.69v1.57h-4.69v2.6h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13Z"/>
-              <path d="M313.99,190.13h163.05v62.86h-54.96l54.96,54.96v45.23h-45.23l-54.96-54.96v54.96h-62.86v-163.05Z"/>
-              <path d="M315.79,366.42v9.73h-1.79v-9.73h1.79ZM329.18,366.42h1.79v9.73h-1.58l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM344.37,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM352.35,368.04v2.29h4.69v1.57h-4.69v2.61h5.47v1.64h-7.27v-9.73h6.92v1.62h-5.13ZM364.63,366.42h3.1c1.3.01,2.16.01,3.02.7.61.5,1.08,1.27,1.08,2.4,0,1.86-1.36,2.51-1.92,2.68l2.17,3.96h-2.08l-1.93-3.61h-1.63v3.61h-1.81v-9.73ZM366.43,367.99v3.05h.63c.62,0,.85-.01,1.2-.03.4-.01,1.71-.08,1.71-1.51,0-.2-.01-.92-.77-1.31-.38-.19-.85-.21-1.93-.21h-.84ZM384.67,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM398.67,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.32,9.73h-1.95l-.56-1.91ZM398.18,372.66l-1.34-4.48-1.35,4.48h2.69ZM412.48,368.07h-2.69v8.08h-1.82v-8.08h-2.63v-1.66h7.14v1.66ZM420.48,366.42v9.73h-1.79v-9.73h1.79ZM431.75,376.4c-1.23,0-2.36-.35-3.35-1.49-.96-1.12-1.29-2.39-1.29-3.61,0-2.98,2.01-5.13,4.67-5.13,2.41,0,4.67,1.79,4.66,5.12-.01,2.78-1.7,5.11-4.69,5.11ZM431.76,367.83c-1.67,0-2.79,1.35-2.79,3.38,0,2.19,1.21,3.5,2.83,3.5,1.21,0,2.77-.88,2.81-3.23.04-1.9-.94-3.65-2.85-3.65ZM448.75,366.42h1.79v9.73h-1.59l-4.26-6.83.11,6.83h-1.78v-9.73h1.64l4.3,6.88-.22-6.88ZM462.74,374.25h-3.65l-.56,1.91h-1.95l3.28-9.73h2.07l3.33,9.73h-1.94l-.57-1.91ZM462.26,372.66l-1.34-4.48-1.35,4.48h2.69ZM473.18,374.5h3.86v1.66h-5.7v-9.75h1.84v8.09Z"/>
-              <path d="M313.99,382.77h13.2c2.51,0,4.91.15,6.52.83,3.52,1.49,4.57,5.1,4.57,7.65,0,.98-.11,3.34-2.02,5.29-1.05,1.13-2.18,1.54-3.41,2.03l6.45,10.69h-9.3l-5.13-9.33h-2.48v9.33h-8.4v-26.48ZM322.39,388.32v6.15h3.49c1.39,0,4.05-.07,4.05-3.04s-2.62-3.11-4.08-3.11h-3.45ZM342.79,382.77h20.96v5.82h-12.58v3.91h11.75v5.75h-11.75v5.25h13.7v5.74h-22.09v-26.48ZM374,400.08c.75,1.16,1.39,2.14,3.68,2.89,1.09.38,2.44.6,3.72.6.68,0,3.98-.07,3.98-1.99,0-.19,0-1.17-1.46-1.65-.94-.34-5.82-1.2-6.91-1.47-2.44-.64-7.21-2.14-7.21-7.7,0-1.17.26-2.37.75-3.42,1.73-3.91,6.2-5.44,10.96-5.44,3.04,0,5.79.6,7.97,1.69,1.99.98,2.97,2.02,3.91,3l-5.25,4.39c-.41-.53-.86-1.12-2-1.73-1.54-.75-3.57-.97-4.92-.97-1.43,0-3,.38-3,1.72,0,1.28,1.35,1.59,3.64,2,5.86,1.02,11.72,2.07,11.72,8.64,0,2.78-1.16,4.73-2.37,5.97-3.34,3.41-8.64,3.41-10.11,3.41-1.99,0-4.09-.19-6.16-.79-4.2-1.2-6.16-3.56-7.36-5.03l6.42-4.13ZM422.96,402.41c-.67,1.28-1.31,2.48-2.59,3.75-2.71,2.66-6.5,3.9-10.29,3.9-9.46,0-13.74-7.14-13.74-13.93s4.77-14.35,13.74-14.35c4.02,0,7.85,1.43,10.62,4.28,1.13,1.16,1.65,2.06,2.22,3.11l-7.02,3.46c-.68-1.55-1.95-4.36-5.48-4.36-1.84,0-3,.86-3.57,1.42-1.99,1.89-1.99,4.89-1.99,5.94,0,3.94,1.46,7.66,5.59,7.66,3.9,0,5.07-3.45,5.37-4.35l7.13,3.46ZM426.27,382.77h8.38v16.53c0,1.13.04,2.29.98,3.19.68.72,1.69.98,2.67.98,1.31,0,2.18-.49,2.67-.94.97-.93,1.01-2.1,1.01-3.23v-16.53h8.45v14.09c0,3.04,0,6.98-3.11,9.95-1.92,1.8-4.99,3.15-9.08,3.15s-7.29-1.28-9.24-3.15c-2.6-2.55-2.64-5.52-2.71-8.3v-15.74ZM454.96,382.77h20.96v5.82h-12.55v3.91h11.72v5.75h-11.72v5.25h13.67v5.74h-22.08v-26.48Z"/>
-            </g>
-          </g>
-        </svg>
-      </div>
-      <div class="header-title">CRF Allocation Calculator</div>
-    </div>
-  </header>
+  <div id="header-mount"></div>
 
   <!-- Calculator -->
   <main>
@@ -948,10 +955,23 @@
         </p>
       </div>
       <div class="footer-legal">
-        &copy; International Rescue Committee. For internal use only.
+        &copy; International Rescue Committee. For internal use only. Part of the <a href="/emergency-classification/" style="color:var(--dark-gray);">IRC Emergency Platform</a>.
       </div>
     </div>
   </footer>
+
+  <!-- Shared IRC Platform bundle -->
+  <script src="irc-shared.iife.js"></script>
+
+  <script>
+    // ── Render shared platform header ──
+    document.getElementById('header-mount').innerHTML = IRCShared.renderHeader('calculator', 'crf');
+    // Close site switcher on outside click
+    document.addEventListener('click', function(e) {
+      var switcher = document.querySelector('.site-switcher');
+      if (switcher && !switcher.contains(e.target)) switcher.classList.remove('open');
+    });
+  </script>
 
   <script>
     (function () {
@@ -972,12 +992,9 @@
         [0.0131, 6], [0.03, 7], [0.078, 8], [0.14, 9], [0.2, 10]
       ];
 
-      // ── Stance matrix: [severity][preVuln][robustness] → stance ──
-      // Extracted from IRC Classification Worksheet (Conflict type)
-      var STANCE_MATRIX = {"1":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"2":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"3":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"4":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"5":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"4":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"}},"6":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"4":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"orange"}},"7":{"1":{"0":"white","1":"yellow","2":"yellow","3":"yellow","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"orange","2":"orange","3":"yellow","4":"yellow","5":"yellow"},"3":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"yellow"},"4":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"orange","5":"orange"}},"8":{"1":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"2":{"0":"orange","1":"orange","2":"orange","3":"orange","4":"yellow","5":"yellow"},"3":{"0":"red","1":"red","2":"red","3":"orange","4":"orange","5":"orange"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"orange","5":"orange"}},"9":{"1":{"0":"red","1":"red","2":"red","3":"orange","4":"orange","5":"orange"},"2":{"0":"red","1":"red","2":"red","3":"red","4":"orange","5":"orange"},"3":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"orange"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"}},"10":{"1":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"orange"},"2":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"},"3":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"},"4":{"0":"red","1":"red","2":"red","3":"red","4":"red","5":"red"}}};
-
-      // ── Country data: [name, countryPop, preVuln, robustness] ──
-      var COUNTRIES = [["Afghanistan",42647492,4,5],["Albania",2377128,2,0],["Algeria",46814308,3,0],["Angola",37885849,4,0],["Antigua and Barbuda",93772,2,0],["Argentina",45696159,2,0],["Armenia",3033500,2,0],["Australia",27196812,1,0],["Austria",9177982,1,0],["Azerbaijan",10202830,2,0],["Bahamas",401283,1,0],["Bahrain",1588670,1,0],["Bangladesh",173562364,3,3],["Barbados",282467,2,0],["Belarus",9132629,2,0],["Belgium",11858610,1,0],["Belize",417072,3,0],["Benin",14462724,4,0],["Bhutan",791524,3,0],["Bolivia (Plurinational State of)",12388571,3,0],["Bosnia and Herzegovina",3180740,2,0],["Botswana",2675352,2,0],["Brazil",216422446,2,0],["Brunei Darussalam",452524,1,0],["Bulgaria",6687717,2,0],["Burkina Faso",23251736,4,2],["Burundi",13238559,4,2],["Cabo Verde",598682,2,0],["Cambodia",17638592,3,0],["Cameroon",28647293,4,3],["Central African Republic",5742315,4,3],["Chad",18278568,4,4],["Chile",19764771,1,0],["China",1425178782,2,0],["Colombia",52085168,2,3],["Comoros",852075,3,0],["Congo",6106869,3,0],["Costa Rica",5212173,2,0],["Croatia",3850894,1,0],["Cuba",11194449,2,0],["Cyprus",1358476,1,0],["Czech Republic",10827529,1,1],["Côte d'Ivoire",28873034,4,4],["Democratic People's Republic of Korea",26160821,3,0],["Democratic Republic of the Congo",102262808,4,3],["Denmark",5910913,1,0],["Djibouti",1120849,3,0],["Dominican Republic",11228370,2,0],["Ecuador",18135463,2,3],["Egypt",112716598,3,0],["El Salvador",6364943,2,2],["Equatorial Guinea",1714671,3,0],["Eritrea",3748901,4,0],["Estonia",1373101,1,0],["Eswatini",1201670,3,0],["Ethiopia",126527060,4,5],["Fiji",936375,2,0],["Finland",5617310,1,0],["France",64756584,1,0],["Gabon",2436566,2,0],["Gambia",2773168,3,0],["Georgia",3728282,2,0],["Germany",84482267,1,2],["Ghana",34121985,3,0],["Greece",10341277,1,2],["Guatemala",18092026,3,2],["Guinea",14190612,4,0],["Guinea-Bissau",2150842,4,0],["Guyana",813834,2,0],["Haiti",11724763,4,1],["Honduras",10593798,3,2],["Hungary",10156239,1,1],["Iceland",393396,1,0],["India",1428627663,3,0],["Indonesia",277534122,3,0],["Iran (Islamic Republic of)",89172767,3,0],["Iraq",45504560,3,3],["Ireland",5255017,1,0],["Israel",9174520,1,0],["Italy",58761146,1,2],["Jamaica",2825544,2,0],["Japan",123294513,1,0],["Jordan",11337052,2,4],["Kazakhstan",19606633,2,0],["Kenya",55100586,3,5],["Kiribati",131232,2,0],["Kuwait",4310108,1,0],["Kyrgyzstan",6974998,2,0],["Lao People's Democratic Republic",7529475,3,0],["Latvia",1830211,1,0],["Lebanon",5489739,2,4],["Lesotho",2330318,3,0],["Liberia",5418377,4,2],["Libya",6888388,2,2],["Lithuania",2718352,1,0],["Luxembourg",660809,1,0],["Madagascar",30325732,4,0],["Malawi",20931751,4,0],["Malaysia",34308525,2,1],["Maldives",521457,2,0],["Mali",23293698,4,4],["Malta",535064,1,0],["Marshall Islands",41996,2,0],["Mauritania",4862989,4,0],["Mauritius",1300557,2,0],["Mexico",128455567,2,2],["Micronesia (Federated States of)",114164,2,0],["Moldova (Republic of)",3435931,2,0],["Mongolia",3447157,2,0],["Montenegro",626485,2,0],["Morocco",37840044,3,0],["Mozambique",33897354,4,0],["Myanmar",54577997,3,5],["Namibia",2604172,3,0],["Nauru",12780,2,0],["Nepal",30896590,3,0],["Netherlands",17879327,1,0],["New Zealand",5228100,1,0],["Nicaragua",7046310,3,0],["Niger",27202843,4,4],["Nigeria",223804632,4,5],["North Macedonia",2093599,2,0],["Norway",5474360,1,0],["Oman",4644384,1,0],["Pakistan",240485658,4,5],["Palau",18055,1,0],["Panama",4408581,2,0],["Papua New Guinea",10329931,3,0],["Paraguay",6861524,2,0],["Peru",34352719,2,3],["Philippines",117337368,3,1],["Poland",41026067,1,1],["Portugal",10247605,1,0],["Qatar",2716391,1,0],["Romania",19892812,2,1],["Russian Federation",144236933,2,0],["Rwanda",14094683,3,0],["Saint Lucia",180251,2,0],["Saint Vincent and the Grenadines",103698,2,0],["Samoa",225681,2,0],["Sao Tome and Principe",231856,3,0],["Saudi Arabia",36947025,1,0],["Senegal",17763163,3,0],["Serbia",7149077,2,2],["Sierra Leone",8791092,4,2],["Singapore",6014723,1,0],["Slovakia",5795199,1,1],["Slovenia",2119675,1,0],["Solomon Islands",740424,3,0],["Somalia",18143378,4,4],["South Africa",60414495,3,0],["South Sudan",11088796,4,5],["Spain",47519628,1,0],["Sri Lanka",21893579,2,0],["State of Palestine",5371230,4,1],["Sudan",48109006,4,3],["Suriname",623236,2,0],["Sweden",10612086,1,0],["Switzerland",8796669,1,0],["Syrian Arab Republic",24672760,3,4],["Tajikistan",10143543,3,0],["Thailand",71801279,2,3],["Timor-Leste",1360596,3,0],["Togo",9053799,4,0],["Tonga",107773,2,0],["Trinidad and Tobago",1534937,2,0],["Tunisia",12458223,2,1],["Turkey",85816199,2,1],["Turkmenistan",6516100,3,0],["Tuvalu",11312,2,0],["Uganda",48582334,4,5],["Ukraine",37000000,2,3],["United Arab Emirates",9441129,1,0],["United Kingdom",67736802,1,0],["United Republic of Tanzania",67438106,4,4],["United States of America",339996563,1,0],["Uruguay",3423108,1,0],["Uzbekistan",35163944,2,0],["Vanuatu",326740,2,0],["Venezuela (Bolivarian Republic of)",28838499,3,3],["Viet Nam",98858950,2,0],["Yemen",34449825,4,2],["Zambia",20569737,3,0],["Zimbabwe",16665409,3,2]];
+      // ── Shared data from @irc/shared ──
+      var STANCE_MATRIX = IRCShared.STANCE_MATRIX;
+      var COUNTRIES = IRCShared.COUNTRIES;
 
       // ── DOM refs ──
       var countrySelect = document.getElementById('country-select');
