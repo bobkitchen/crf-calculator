@@ -408,7 +408,7 @@ var IRCShared = (() => {
         label: "CRF Calculator",
         shortLabel: "CRF",
         description: "Crisis Response Fund allocation calculator",
-        url: env === "github" ? "/crf-calculator/" : "allocation-calculator.html",
+        url: env === "github" ? "/crf-calculator/allocation-calculator.html" : "allocation-calculator.html",
         pages: [
           { id: "calculator", url: "allocation-calculator.html", label: "Calculator" },
           { id: "ask-albert", url: "ask-albert.html", label: "Ask Albert" }
