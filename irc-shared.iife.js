@@ -392,7 +392,7 @@ var IRCShared = (() => {
   }
   function getSettingsUrl() {
     var env = detectEnvironment();
-    return env === "github" ? "/emergency-classification/settings.html" : "settings.html";
+    return env === "github" ? "/irc-admin/" : "/irc-admin/index.html";
   }
   function getSiteConfig() {
     var env = detectEnvironment();
@@ -429,6 +429,13 @@ var IRCShared = (() => {
           { id: "navigator", url: "navigator", label: "Navigator" },
           { id: "resources", url: "resources", label: "Resources" }
         ]
+      },
+      admin: {
+        label: "Platform Admin",
+        shortLabel: "Admin",
+        description: "Platform administration and configuration",
+        url: env === "github" ? "/irc-admin/" : "/irc-admin/index.html",
+        pages: []
       }
     };
   }
@@ -482,7 +489,8 @@ var IRCShared = (() => {
     var titles = {
       classification: { title: "Emergency Classification", subtitle: "a Global Crisis Analysis project" },
       navigator: { title: "Emergency Response Navigator", subtitle: "An Emergency Unit Project" },
-      crf: { title: "CRF Allocation Calculator", subtitle: "Crisis Response Fund" }
+      crf: { title: "CRF Allocation Calculator", subtitle: "Crisis Response Fund" },
+      admin: { title: "IRC Emergency Platform", subtitle: "Administration" }
     };
     var t = titles[currentSite] || titles.classification;
     return '<header><div class="header-inner">' + switcherHtml + '<a href="' + site.url + '" class="header-brand"><div class="logo-container">' + IRC_LOGO_SVG + '</div><div><div class="header-title">' + t.title + '</div><div class="header-subtitle">' + t.subtitle + "</div></div></a>" + navHtml + hamburgerHtml + "</div>" + mobileNavHtml + "</header>";
