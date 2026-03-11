@@ -22,6 +22,7 @@ var IRCShared = (() => {
   __export(src_exports, {
     BASE_URL: () => BASE_URL,
     COUNTRIES: () => COUNTRIES,
+    COUNTRY_ALIASES: () => COUNTRY_ALIASES,
     HEADERS: () => HEADERS,
     IRC_LOGO_DATA_URI: () => IRC_LOGO_DATA_URI,
     METRIC_CONFIGS: () => METRIC_CONFIGS,
@@ -48,6 +49,7 @@ var IRCShared = (() => {
     lookupStance: () => lookupStance,
     mapToCamel: () => mapToCamel,
     mapToSnake: () => mapToSnake,
+    normalizeCountry: () => normalizeCountry,
     renderFooter: () => renderFooter,
     renderHeader: () => renderHeader,
     uuid: () => uuid
@@ -83,6 +85,35 @@ var IRCShared = (() => {
       ptsd: [[50, 1], [500, 2], [88e3, 3], [16e4, 4], [33e4, 5]]
     }
   };
+  var COUNTRY_ALIASES = {
+    "car": "Central African Republic",
+    "drc": "Democratic Republic of the Congo",
+    "dr congo": "Democratic Republic of the Congo",
+    "iran": "Iran (Islamic Republic of)",
+    "palestine": "State of Palestine",
+    "syria": "Syrian Arab Republic",
+    "tanzania": "United Republic of Tanzania",
+    "usa": "United States of America",
+    "venezuela": "Venezuela (Bolivarian Republic of)",
+    "vietnam": "Viet Nam",
+    "republic of moldova": "Moldova (Republic of)",
+    "moldova": "Moldova (Republic of)",
+    "congo": "Congo",
+    "barbuda": "Antigua and Barbuda",
+    "turkey": "Turkey",
+    "taiwan": "Taiwan",
+    "laos": "Lao People's Democratic Republic",
+    "north korea": "Democratic People's Republic of Korea",
+    "uk": "United Kingdom",
+    "micronesia": "Micronesia (Federated States of)",
+    "bolivia": "Bolivia (Plurinational State of)"
+  };
+  function normalizeCountry(raw) {
+    if (!raw)
+      return raw;
+    const trimmed = raw.trim();
+    return COUNTRY_ALIASES[trimmed.toLowerCase()] || trimmed;
+  }
   var METRIC_CONFIGS = {
     conflict: [
       { id: "deaths", label: "Deaths", hint: "Total number of deaths" },
