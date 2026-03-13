@@ -479,6 +479,13 @@ var IRCShared = (() => {
         description: "Platform overview and getting started",
         url: env === "github" ? "/irc-emergency-platform-site/" : "/landing/index.html",
         pages: []
+      },
+      help: {
+        label: "Help Guide",
+        shortLabel: "Help",
+        description: "User guide for all platform tools",
+        url: env === "github" ? "/irc-emergency-platform-site/help.html" : "/landing/help.html",
+        pages: []
       }
     };
   }
@@ -500,11 +507,22 @@ var IRCShared = (() => {
     currentSite = currentSite || "classification";
     var config = getSiteConfig();
     var site = config[currentSite];
-    var allSiteKeys = Object.keys(config);
-    var switcherOptionsHtml = allSiteKeys.map(function(key) {
-      var s = config[key];
-      var isActive = key === currentSite;
-      return '<a href="' + s.url + '" class="site-switcher-option' + (isActive ? " active" : "") + '"><span class="site-switcher-option-name">' + s.label + '</span><span class="site-switcher-option-desc">' + s.description + "</span></a>";
+    var switcherOrder = [
+      { key: "landing", indent: false },
+      { key: "classification", indent: true },
+      { key: "crf", indent: true },
+      { key: "navigator", indent: true },
+      { key: "admin", indent: false, divider: true },
+      { key: "help", indent: false }
+    ];
+    var switcherOptionsHtml = switcherOrder.map(function(entry) {
+      var s = config[entry.key];
+      if (!s)
+        return "";
+      var isActive = entry.key === currentSite;
+      var classes = "site-switcher-option" + (isActive ? " active" : "") + (entry.indent ? " indented" : "");
+      var dividerHtml = entry.divider ? '<div class="site-switcher-divider"></div>' : "";
+      return dividerHtml + '<a href="' + s.url + '" class="' + classes + '"><span class="site-switcher-option-name">' + s.label + '</span><span class="site-switcher-option-desc">' + s.description + "</span></a>";
     }).join("");
     var switcherHtml = `<div class="site-switcher"><button class="site-switcher-toggle" onclick="this.parentElement.classList.toggle('open')" aria-expanded="false" aria-haspopup="true"><span class="site-switcher-label">` + site.shortLabel + '</span><svg class="site-switcher-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="site-switcher-dropdown">' + switcherOptionsHtml + "</div></div>";
     var navHtml = '<nav class="header-nav">';
