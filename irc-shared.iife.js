@@ -467,6 +467,13 @@ var IRCShared = (() => {
         description: "Platform administration and configuration",
         url: env === "github" ? "/irc-admin/" : "/irc-admin/index.html",
         pages: []
+      },
+      landing: {
+        label: "IRC Emergency Platform",
+        shortLabel: "Platform",
+        description: "Platform overview and getting started",
+        url: env === "github" ? "/irc-emergency-platform-site/" : "/landing/index.html",
+        pages: []
       }
     };
   }
