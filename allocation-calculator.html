@@ -1548,10 +1548,12 @@
           All figures are rounded to the nearest $25,000.
         </p>
         <p>
-          <strong>Proportional discount:</strong> When enabled, reducing the target population below 10% of the
-          affected population proportionally reduces the CRF allocation. For example, setting a target of 5%
-          (half the 10% baseline) scales the CRF amount to 50% of the standard allocation. This ensures the
-          funding ask reflects the stated level of ambition.
+          <strong>Proportional scaling:</strong> When the target population differs from the 10% baseline,
+          a toggle appears to scale the CRF allocation proportionally. Reducing the target below 10%
+          applies a <em>discount</em> — for example, a 5% target scales CRF to 50% of the standard amount.
+          Increasing the target above 10% offers a <em>plus-up</em> — for example, a 15% target scales CRF
+          to 150%. This ensures the funding ask reflects the stated level of ambition in either direction.
+          The allocation ceiling ($1M Orange / $2M Red) still applies.
         </p>
       </div>
       <div class="footer-legal">
@@ -1879,10 +1881,17 @@
           var defaultTarget = Math.round(affectedPop * 0.1);
           if (targetPop < defaultTarget) {
             discountRow.style.display = 'block';
+            document.querySelector('.discount-toggle-label').textContent = 'Proportional discount';
+            document.querySelector('.discount-hint').textContent = 'Scales CRF allocation to match your reduced target';
+            return;
+          } else if (targetPop > defaultTarget) {
+            discountRow.style.display = 'block';
+            document.querySelector('.discount-toggle-label').textContent = 'Proportional plus-up';
+            document.querySelector('.discount-hint').textContent = 'Scales CRF allocation to match your increased target';
             return;
           }
         }
-        // Hide and reset when not applicable
+        // Hide and reset when target equals default or inputs missing
         discountRow.style.display = 'none';
         if (proportionalDiscountEnabled) {
           proportionalDiscountEnabled = false;
@@ -1996,26 +2005,30 @@
         var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
 
-        // Proportional discount: scale CRF down when target < 10% of affected
-        var discountApplied = false;
-        var discountFactor = 1;
+        // Proportional scaling: adjust CRF when target differs from 10% baseline
+        var scalingApplied = false;
+        var scalingFactor = 1;
         if (proportionalDiscountEnabled && affectedPop > 0) {
           var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop < defaultTarget) {
-            discountFactor = targetPop / defaultTarget;
-            crfAmount = roundToNearest25K(crfAmount * discountFactor);
+          if (defaultTarget > 0 && targetPop !== defaultTarget) {
+            scalingFactor = targetPop / defaultTarget;
+            crfAmount = roundToNearest25K(crfAmount * scalingFactor);
             crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
-            discountApplied = true;
+            scalingApplied = true;
           }
         }
 
-        // Show/hide discount notice
-        if (discountApplied) {
-          var pctOfBaseline = (discountFactor * 100);
+        // Show/hide scaling notice
+        if (scalingApplied) {
+          var pctOfBaseline = (scalingFactor * 100);
           var pctStr = pctOfBaseline % 1 === 0 ? pctOfBaseline.toFixed(0) : pctOfBaseline.toFixed(1);
           var targetPct = ((targetPop / affectedPop) * 100);
           var targetPctStr = targetPct % 1 === 0 ? targetPct.toFixed(0) : targetPct.toFixed(1);
-          discountNotice.innerHTML = 'Proportional discount active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
+          if (scalingFactor < 1) {
+            discountNotice.innerHTML = 'Proportional discount active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
+          } else {
+            discountNotice.innerHTML = 'Proportional plus-up active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
+          }
           discountNotice.style.display = 'block';
         } else {
           discountNotice.style.display = 'none';
@@ -2408,10 +2421,14 @@
         var discountLine = '';
         if (proportionalDiscountEnabled && affectedPop > 0) {
           var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop < defaultTarget) {
+          if (defaultTarget > 0 && targetPop !== defaultTarget) {
             var df = ((targetPop / defaultTarget) * 100);
             var dfStr = df % 1 === 0 ? df.toFixed(0) : df.toFixed(1);
-            discountLine = '\nProportional discount: ' + dfStr + '% of standard (target below 10% baseline)';
+            if (targetPop < defaultTarget) {
+              discountLine = '\nProportional discount: ' + dfStr + '% of standard (target below 10% baseline)';
+            } else {
+              discountLine = '\nProportional plus-up: ' + dfStr + '% of standard (target above 10% baseline)';
+            }
           }
         }
 
@@ -2474,11 +2491,11 @@
         var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
         var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
 
-        // Apply proportional discount if active
+        // Apply proportional scaling if active
         var discountLabel = '';
         if (proportionalDiscountEnabled && affectedPop > 0) {
           var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop < defaultTarget) {
+          if (defaultTarget > 0 && targetPop !== defaultTarget) {
             var df = targetPop / defaultTarget;
             crfAmount = roundToNearest25K(crfAmount * df);
             crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
