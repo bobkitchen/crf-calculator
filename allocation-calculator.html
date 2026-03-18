@@ -1897,6 +1897,12 @@
           proportionalDiscountEnabled = false;
           discountToggleInput.checked = false;
           discountNotice.style.display = 'none';
+          // Reset coverage button labels to base values
+          coverageButtons.forEach(function (btn) {
+            var base = parseInt(btn.getAttribute('data-coverage'), 10);
+            btn.querySelector('.coverage-btn-num').textContent = base + '%';
+            btn.querySelector('.coverage-btn-label').textContent = 'of affected people';
+          });
         }
       }
 
@@ -2052,6 +2058,22 @@
         } else {
           ceilingWarning.style.display = 'none';
         }
+
+        // Update coverage button labels to reflect effective percentage
+        coverageButtons.forEach(function (btn) {
+          var base = parseInt(btn.getAttribute('data-coverage'), 10);
+          var effective = base * scalingFactor;
+          var numEl = btn.querySelector('.coverage-btn-num');
+          var labelEl = btn.querySelector('.coverage-btn-label');
+          if (scalingApplied && scalingFactor !== 1) {
+            var effectiveStr = effective % 1 === 0 ? effective.toFixed(0) : effective.toFixed(1);
+            numEl.textContent = effectiveStr + '%';
+            labelEl.textContent = 'effective · ' + base + '% base';
+          } else {
+            numEl.textContent = base + '%';
+            labelEl.textContent = 'of affected people';
+          }
+        });
       }
 
       // ── Calculate ──
