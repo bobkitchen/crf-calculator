@@ -1280,7 +1280,10 @@
           />
         </div>
         <div class="pop-col-target" id="target-col">
-          <div class="target-label">IRC Target Population</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="target-label" style="margin-bottom:0;">IRC Target Population</div>
+            <button id="reset-target-btn" type="button" style="display:none; background:none; border:1px solid rgba(255,255,255,0.25); border-radius:4px; color:rgba(255,255,255,0.5); font-family:inherit; font-size:0.625rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; padding:2px 8px; cursor:pointer; transition:all 0.12s ease;">Reset to 10%</button>
+          </div>
           <input
             type="text"
             id="target-pop"
@@ -1528,6 +1531,7 @@
       var classificationLoading = document.getElementById('classification-loading');
       var affectedAutoBadge = document.getElementById('affected-auto-badge');
       var stanceAutoBadge = document.getElementById('stance-auto-badge');
+      var resetTargetBtn = document.getElementById('reset-target-btn');
       var copySummaryBtn = document.getElementById('copy-summary-btn');
       var nextStepsSection = document.getElementById('next-steps');
       var stanceExplainer = document.getElementById('stance-explainer');
@@ -1754,8 +1758,32 @@
         targetManuallyEdited = true;
         targetPop = formatTargetInput(this);
         updateTargetHint();
+        updateResetButton();
         calculate();
       });
+
+      // ── Reset target to 10% ──
+      resetTargetBtn.addEventListener('click', function () {
+        if (affectedPop > 0) {
+          targetManuallyEdited = false;
+          targetPop = Math.round(affectedPop * 0.1);
+          targetInput.value = formatNum(targetPop);
+          updateTargetHint();
+          updateResetButton();
+          calculate();
+        }
+      });
+
+      function updateResetButton() {
+        if (affectedPop > 0 && targetManuallyEdited) {
+          var defaultTarget = Math.round(affectedPop * 0.1);
+          if (targetPop !== defaultTarget) {
+            resetTargetBtn.style.display = 'block';
+            return;
+          }
+        }
+        resetTargetBtn.style.display = 'none';
+      }
 
       function updateTargetHint() {
         if (affectedPop > 0 && targetPop > 0) {
