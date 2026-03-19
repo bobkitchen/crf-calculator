@@ -1750,6 +1750,7 @@
         }
         if (!stanceManuallyOverridden) updateAutoStance();
         updateTargetHint();
+        updateResetButton();
         calculate();
       });
 
@@ -1775,7 +1776,7 @@
       });
 
       function updateResetButton() {
-        if (affectedPop > 0 && targetManuallyEdited) {
+        if (affectedPop > 0 && targetPop > 0) {
           var defaultTarget = Math.round(affectedPop * 0.1);
           if (targetPop !== defaultTarget) {
             resetTargetBtn.style.display = 'block';
@@ -2081,6 +2082,7 @@
             targetInput.value = formatNum(targetPop);
           }
           updateTargetHint();
+          updateResetButton();
         }
 
         // Auto-populate stance from classification
