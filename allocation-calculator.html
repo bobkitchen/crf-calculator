@@ -870,94 +870,6 @@
       color: var(--muted);
     }
 
-    /* ── Proportional discount toggle ── */
-    .discount-row {
-      margin-top: 16px;
-      padding: 14px 16px;
-      background: #F6F6F6;
-      border: 1px solid var(--mid-gray);
-      border-radius: 8px;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-
-    .discount-toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .discount-toggle {
-      position: relative;
-      width: 40px;
-      height: 22px;
-      flex-shrink: 0;
-    }
-
-    .discount-toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .discount-toggle .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--mid-gray);
-      border-radius: 22px;
-      transition: background 0.2s;
-    }
-
-    .discount-toggle .slider::before {
-      content: '';
-      position: absolute;
-      height: 16px;
-      width: 16px;
-      left: 3px;
-      bottom: 3px;
-      background: var(--white);
-      border-radius: 50%;
-      transition: transform 0.2s;
-    }
-
-    .discount-toggle input:checked + .slider {
-      background: var(--black);
-    }
-
-    .discount-toggle input:checked + .slider::before {
-      transform: translateX(18px);
-    }
-
-    .discount-toggle-label {
-      font-size: 0.8125rem;
-      font-weight: 700;
-      color: var(--dark-gray);
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .discount-hint {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-left: auto;
-    }
-
-    .discount-notice {
-      margin-top: 10px;
-      padding: 10px 14px;
-      background: #FFF8E5;
-      border: 1px solid #FFD960;
-      border-radius: 6px;
-      font-size: 0.8125rem;
-      color: var(--dark-gray);
-      line-height: 1.5;
-      display: none;
-    }
-
-    .discount-notice strong {
-      font-weight: 700;
-    }
-
     /* ── Ceiling warning ── */
     .ceiling-warning {
       margin-top: 16px;
@@ -1429,24 +1341,24 @@
       <div class="allocation-card" id="allocation-card" style="display: none;">
 
         <!-- Coverage selector -->
-        <div class="selector-label">CRF funds programming for</div>
+        <div class="selector-label">CRF covers</div>
 
         <div class="coverage-buttons" id="coverage-buttons">
-          <button class="coverage-btn selected" data-coverage="1" type="button">
-            <div class="coverage-btn-num">1%</div>
-            <div class="coverage-btn-label">of affected people</div>
+          <button class="coverage-btn selected" data-coverage="10" type="button">
+            <div class="coverage-btn-num">10%</div>
+            <div class="coverage-btn-label">of response programming</div>
           </button>
-          <button class="coverage-btn" data-coverage="2" type="button">
-            <div class="coverage-btn-num">2%</div>
-            <div class="coverage-btn-label">of affected people</div>
+          <button class="coverage-btn" data-coverage="20" type="button">
+            <div class="coverage-btn-num">20%</div>
+            <div class="coverage-btn-label">of response programming</div>
           </button>
-          <button class="coverage-btn" data-coverage="3" type="button">
-            <div class="coverage-btn-num">3%</div>
-            <div class="coverage-btn-label">of affected people</div>
+          <button class="coverage-btn" data-coverage="30" type="button">
+            <div class="coverage-btn-num">30%</div>
+            <div class="coverage-btn-label">of response programming</div>
           </button>
         </div>
         <p id="coverage-guidance" style="font-size:0.75rem; color:#666; margin:-20px 0 20px; line-height:1.5;">
-          <strong>1%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>2%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>3%</strong> — maximum for large-scale emergencies
+          <strong>10%</strong> — standard initial allocation &nbsp;|&nbsp; <strong>20%</strong> — scaled response for high-severity &nbsp;|&nbsp; <strong>30%</strong> — maximum for large-scale emergencies
         </p>
 
         <!-- Split bar -->
@@ -1476,21 +1388,6 @@
         <!-- Ceiling warning -->
         <div class="ceiling-warning" id="ceiling-warning">
           This allocation exceeds $2M. Consider whether the CRF pool can sustain this alongside other active emergencies.
-        </div>
-
-        <!-- Proportional discount (shown only when target manually edited) -->
-        <div class="discount-row" id="discount-row" style="display:none;">
-          <div class="discount-toggle-row">
-            <label class="discount-toggle">
-              <input type="checkbox" id="discount-toggle-input">
-              <span class="slider"></span>
-            </label>
-            <label class="discount-toggle-label" for="discount-toggle-input">
-              Proportional discount
-            </label>
-            <span class="discount-hint">Scales CRF allocation to match your reduced target</span>
-          </div>
-          <div class="discount-notice" id="discount-notice"></div>
         </div>
 
         <!-- Copy Summary + Save Scenario buttons -->
@@ -1542,17 +1439,11 @@
           adjustable based on operational access and feasibility.
         </p>
         <p>
-          Coverage options represent the percentage of the total affected population that CRF funds directly,
-          from <strong>1%</strong> up to <strong>3%</strong> of affected people. The remaining gap represents
-          the external fundraising required to reach the IRC's 10% response goal.
-          All figures are rounded to the nearest $25,000.
-        </p>
-        <p>
-          <strong>Proportional scaling:</strong> When the target population differs from the 10% baseline,
-          a toggle appears to scale the CRF allocation proportionally. Reducing the target below 10%
-          applies a <em>discount</em> — for example, a 5% target scales CRF to 50% of the standard amount.
-          Increasing the target above 10% offers a <em>plus-up</em> — for example, a 15% target scales CRF
-          to 150%. This ensures the funding ask reflects the stated level of ambition in either direction.
+          Coverage options represent the percentage of total response programming that CRF funds,
+          from <strong>10%</strong> up to <strong>30%</strong>. Because the total programming cost is derived
+          from the target population, changing the target automatically adjusts the CRF allocation —
+          no separate scaling toggle is needed. The remaining gap represents the external fundraising
+          required to reach the IRC's response goal. All figures are rounded to the nearest $25,000.
           The allocation ceiling ($1M Orange / $2M Red) still applies.
         </p>
       </div>
@@ -1578,7 +1469,7 @@
   <script>
     (function () {
       var PER_CLIENT_COST = parseFloat(localStorage.getItem('irc_crf_per_client_cost')) || 47.34;
-      var DEFAULT_COVERAGE = parseFloat(localStorage.getItem('irc_crf_default_coverage')) || 1;
+      var DEFAULT_COVERAGE = parseFloat(localStorage.getItem('irc_crf_default_coverage')) || 10;
 
       var STANCE_CEILINGS = {
         orange: parseFloat(localStorage.getItem('irc_crf_ceiling_orange')) || 1000000,
@@ -1651,10 +1542,6 @@
       var scenarioComparisonEl = document.getElementById('scenario-comparison');
       var scenarioTableWrap = document.getElementById('scenario-table-wrap');
       var clearScenariosBtn = document.getElementById('clear-scenarios-btn');
-      var discountRow = document.getElementById('discount-row');
-      var discountToggleInput = document.getElementById('discount-toggle-input');
-      var discountNotice = document.getElementById('discount-notice');
-
       // ── State ──
       var selectedCountry = null; // {name, pop, pv, rob}
       var affectedPop = 0;
@@ -1667,7 +1554,6 @@
       var classificationsCache = null; // null = not yet fetched
       var classificationsFetchFailed = false;
       var selectedClassification = null;
-      var proportionalDiscountEnabled = false;
       var savedScenarios = []; // max 3
 
       // ── Populate country list ──
@@ -1863,7 +1749,6 @@
         }
         if (!stanceManuallyOverridden) updateAutoStance();
         updateTargetHint();
-        updateDiscountVisibility();
         calculate();
       });
 
@@ -1872,39 +1757,8 @@
         targetManuallyEdited = true;
         targetPop = formatTargetInput(this);
         updateTargetHint();
-        updateDiscountVisibility();
         calculate();
       });
-
-      function updateDiscountVisibility() {
-        if (targetManuallyEdited && affectedPop > 0 && targetPop > 0) {
-          var defaultTarget = Math.round(affectedPop * 0.1);
-          if (targetPop < defaultTarget) {
-            discountRow.style.display = 'block';
-            document.querySelector('.discount-toggle-label').textContent = 'Proportional discount';
-            document.querySelector('.discount-hint').textContent = 'Scales CRF allocation to match your reduced target';
-            return;
-          } else if (targetPop > defaultTarget) {
-            discountRow.style.display = 'block';
-            document.querySelector('.discount-toggle-label').textContent = 'Proportional plus-up';
-            document.querySelector('.discount-hint').textContent = 'Scales CRF allocation to match your increased target';
-            return;
-          }
-        }
-        // Hide and reset when target equals default or inputs missing
-        discountRow.style.display = 'none';
-        if (proportionalDiscountEnabled) {
-          proportionalDiscountEnabled = false;
-          discountToggleInput.checked = false;
-          discountNotice.style.display = 'none';
-          // Reset coverage button labels to base values
-          coverageButtons.forEach(function (btn) {
-            var base = parseInt(btn.getAttribute('data-coverage'), 10);
-            btn.querySelector('.coverage-btn-num').textContent = base + '%';
-            btn.querySelector('.coverage-btn-label').textContent = 'of affected people';
-          });
-        }
-      }
 
       function updateTargetHint() {
         if (affectedPop > 0 && targetPop > 0) {
@@ -1995,50 +1849,12 @@
         });
       });
 
-      // ── Proportional discount toggle ──
-      discountToggleInput.addEventListener('change', function () {
-        proportionalDiscountEnabled = this.checked;
-        if (!proportionalDiscountEnabled) {
-          discountNotice.style.display = 'none';
-        }
-        if (totalCost > 0) updateAllocation();
-      });
-
       // ── Update allocation display ──
       function updateAllocation() {
         if (totalCost <= 0) return;
-        // selectedCoverage is 1, 2, or 3 (percent of affected pop)
-        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
-        var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
-
-        // Proportional scaling: adjust CRF when target differs from 10% baseline
-        var scalingApplied = false;
-        var scalingFactor = 1;
-        if (proportionalDiscountEnabled && affectedPop > 0) {
-          var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop !== defaultTarget) {
-            scalingFactor = targetPop / defaultTarget;
-            crfAmount = roundToNearest25K(crfAmount * scalingFactor);
-            crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
-            scalingApplied = true;
-          }
-        }
-
-        // Show/hide scaling notice
-        if (scalingApplied) {
-          var pctOfBaseline = (scalingFactor * 100);
-          var pctStr = pctOfBaseline % 1 === 0 ? pctOfBaseline.toFixed(0) : pctOfBaseline.toFixed(1);
-          var targetPct = ((targetPop / affectedPop) * 100);
-          var targetPctStr = targetPct % 1 === 0 ? targetPct.toFixed(0) : targetPct.toFixed(1);
-          if (scalingFactor < 1) {
-            discountNotice.innerHTML = 'Proportional discount active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
-          } else {
-            discountNotice.innerHTML = 'Proportional plus-up active — target is <strong>' + targetPctStr + '%</strong> of affected (vs. 10% baseline), so CRF allocation is scaled to <strong>' + pctStr + '%</strong> of the standard amount.';
-          }
-          discountNotice.style.display = 'block';
-        } else {
-          discountNotice.style.display = 'none';
-        }
+        // selectedCoverage is 10, 20, or 30 (percent of response programming)
+        var crfAmount = roundToNearest25K(totalCost * selectedCoverage / 100);
+        var crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
 
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
@@ -2058,22 +1874,6 @@
         } else {
           ceilingWarning.style.display = 'none';
         }
-
-        // Update coverage button labels to reflect effective percentage
-        coverageButtons.forEach(function (btn) {
-          var base = parseInt(btn.getAttribute('data-coverage'), 10);
-          var effective = base * scalingFactor;
-          var numEl = btn.querySelector('.coverage-btn-num');
-          var labelEl = btn.querySelector('.coverage-btn-label');
-          if (scalingApplied && scalingFactor !== 1) {
-            var effectiveStr = effective % 1 === 0 ? effective.toFixed(0) : effective.toFixed(1);
-            numEl.textContent = effectiveStr + '%';
-            labelEl.textContent = 'effective · ' + base + '% base';
-          } else {
-            numEl.textContent = base + '%';
-            labelEl.textContent = 'of affected people';
-          }
-        });
       }
 
       // ── Calculate ──
@@ -2256,7 +2056,6 @@
             targetInput.value = formatNum(targetPop);
           }
           updateTargetHint();
-          updateDiscountVisibility();
         }
 
         // Auto-populate stance from classification
@@ -2438,25 +2237,11 @@
         var stanceLabel = selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '—';
         var severity = (selectedCountry && affectedPop > 0) ? getSeverity(affectedPop, selectedCountry.pop) : '—';
         var crfAmount = crfAmountEl.textContent || '—';
-        var coveragePct = selectedCoverage + '%';
-
-        var discountLine = '';
-        if (proportionalDiscountEnabled && affectedPop > 0) {
-          var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop !== defaultTarget) {
-            var df = ((targetPop / defaultTarget) * 100);
-            var dfStr = df % 1 === 0 ? df.toFixed(0) : df.toFixed(1);
-            if (targetPop < defaultTarget) {
-              discountLine = '\nProportional discount: ' + dfStr + '% of standard (target below 10% baseline)';
-            } else {
-              discountLine = '\nProportional plus-up: ' + dfStr + '% of standard (target above 10% baseline)';
-            }
-          }
-        }
+        var coveragePct = selectedCoverage + '% of response programming';
 
         var summary = 'CRF REQUEST SUMMARY \u2014 ' + countryName + ' (' + dateStr + ')\n' +
           'Classification: ' + stanceLabel + ' | Severity: ' + severity + '\n' +
-          'CRF Allocation: ' + crfAmount + discountLine + '\n' +
+          'CRF Allocation: ' + crfAmount + '\n' +
           'Coverage: ' + coveragePct + ' | Per-client cost: $' + PER_CLIENT_COST.toFixed(2);
 
         navigator.clipboard.writeText(summary).then(function () {
@@ -2510,20 +2295,8 @@
       var MAX_SCENARIOS = 3;
 
       function captureCurrentScenario() {
-        var crfPeople = Math.round(affectedPop * selectedCoverage / 100);
-        var crfAmount = roundToNearest25K(crfPeople * PER_CLIENT_COST);
-
-        // Apply proportional scaling if active
-        var discountLabel = '';
-        if (proportionalDiscountEnabled && affectedPop > 0) {
-          var defaultTarget = Math.round(affectedPop * 0.1);
-          if (defaultTarget > 0 && targetPop !== defaultTarget) {
-            var df = targetPop / defaultTarget;
-            crfAmount = roundToNearest25K(crfAmount * df);
-            crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
-            discountLabel = Math.round(df * 100) + '%';
-          }
-        }
+        var crfAmount = roundToNearest25K(totalCost * selectedCoverage / 100);
+        var crfPeople = Math.round(crfAmount / PER_CLIENT_COST);
 
         var gapPeople = Math.max(0, targetPop - crfPeople);
         var gapAmount = Math.max(0, totalCost - crfAmount);
@@ -2540,7 +2313,6 @@
           gapPeople: gapPeople,
           gapAmount: gapAmount,
           totalCost: totalCost,
-          discount: discountLabel,
           timestamp: new Date()
         };
       }
@@ -2580,7 +2352,6 @@
           { label: 'Target Pop.', key: 'targetPop', format: 'num' },
           { label: 'Stance', key: 'stance', format: 'stance' },
           { label: 'Coverage', key: 'coverage', format: 'pct' },
-          { label: 'Discount', key: 'discount', format: 'text' },
           { label: 'CRF People', key: 'crfPeople', format: 'num' },
           { label: 'CRF Amount', key: 'crfAmount', format: 'currency', highlight: true },
           { label: 'Gap People', key: 'gapPeople', format: 'num' },
