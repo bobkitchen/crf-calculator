@@ -538,84 +538,6 @@
       color: rgba(255, 255, 255, 0.85);
     }
 
-    /* ── Response stance buttons ── */
-    .stance-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .stance-btn {
-      flex: 1;
-      padding: 18px 16px;
-      border: 2px solid var(--mid-gray);
-      border-radius: 8px;
-      background: var(--light-gray);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.12s ease;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    .stance-btn:hover:not(.selected) {
-      border-color: var(--dark-gray);
-      background: var(--white);
-    }
-
-    .stance-btn:active {
-      transform: scale(0.97);
-    }
-
-    .stance-btn-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 4px;
-    }
-
-    .stance-btn-sub {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-
-    /* Orange stance */
-    .stance-btn[data-stance="orange"] .stance-btn-name {
-      color: #E87722;
-    }
-
-    .stance-btn[data-stance="orange"].selected {
-      border-color: #E87722;
-      background: #E87722;
-    }
-
-    .stance-btn[data-stance="orange"].selected .stance-btn-name {
-      color: var(--black);
-    }
-
-    .stance-btn[data-stance="orange"].selected .stance-btn-sub {
-      color: rgba(0, 0, 0, 0.7);
-    }
-
-    /* Red stance */
-    .stance-btn[data-stance="red"] .stance-btn-name {
-      color: #C4421A;
-    }
-
-    .stance-btn[data-stance="red"].selected {
-      border-color: #C4421A;
-      background: #C4421A;
-    }
-
-    .stance-btn[data-stance="red"].selected .stance-btn-name {
-      color: var(--white);
-    }
-
-    .stance-btn[data-stance="red"].selected .stance-btn-sub {
-      color: rgba(255, 255, 255, 0.8);
-    }
-
     .stance-hint {
       font-size: 0.8125rem;
       color: var(--muted);
@@ -1303,23 +1225,19 @@
     <!-- Response stance -->
     <div class="calc-section">
       <div class="section-label">Emergency Classification <span class="auto-populated-badge" id="stance-auto-badge" style="display:none;">FROM CLASSIFICATION</span></div>
-      <div class="stance-buttons" id="stance-buttons">
-        <button class="stance-btn" data-stance="orange" type="button">
-          <div class="stance-btn-name">Orange</div>
-          <div class="stance-btn-sub">Ceiling: $1M</div>
-        </button>
-        <button class="stance-btn" data-stance="red" type="button">
-          <div class="stance-btn-name">Red</div>
-          <div class="stance-btn-sub">Ceiling: $2M</div>
-        </button>
+      <div id="stance-display" style="display:none;">
+        <div id="stance-display-box" style="padding:18px 20px; border-radius:8px; text-align:center;">
+          <div id="stance-display-name" style="font-size:1.25rem; font-weight:700; letter-spacing:-0.02em; line-height:1.1; margin-bottom:4px;"></div>
+          <div id="stance-display-detail" style="font-size:0.75rem; line-height:1.3;"></div>
+        </div>
       </div>
-      <div class="stance-hint" id="stance-hint">Select the emergency response stance to set the allocation ceiling.</div>
+      <div class="stance-hint" id="stance-hint">Classification stance will be determined automatically from the country and affected population.</div>
       <details id="stance-explainer" style="display:none; margin-top:10px; font-size:0.8125rem; color:#383838; line-height:1.5;">
         <summary style="cursor:pointer; font-weight:600; color:#666; user-select:none;">How was this determined?</summary>
         <div id="stance-explainer-body" style="margin-top:8px; padding:12px 16px; background:#F6F6F6; border-radius:8px; border:1px solid #D1D1D1;">
         </div>
       </details>
-      <div class="stance-not-eligible" id="stance-not-eligible">Based on the affected population and country profile, this emergency would be classified <strong>Yellow or White</strong>, which does not qualify for CRF allocation. You can override this by selecting a stance above.</div>
+      <div class="stance-not-eligible" id="stance-not-eligible">Based on the affected population and country profile, this emergency would be classified <strong>Yellow or White</strong>, which does not qualify for CRF allocation.</div>
     </div>
 
     <div class="section-divider"></div>
@@ -1347,11 +1265,11 @@
         <div class="selector-label">CRF covers</div>
 
         <div class="coverage-buttons" id="coverage-buttons">
-          <button class="coverage-btn selected" data-coverage="10" type="button">
+          <button class="coverage-btn" data-coverage="10" type="button">
             <div class="coverage-btn-num">10%</div>
             <div class="coverage-btn-label">of response programming</div>
           </button>
-          <button class="coverage-btn" data-coverage="20" type="button">
+          <button class="coverage-btn selected" data-coverage="20" type="button">
             <div class="coverage-btn-num">20%</div>
             <div class="coverage-btn-label">of response programming</div>
           </button>
@@ -1363,7 +1281,7 @@
 
         <!-- Split bar -->
         <div class="split-bar">
-          <div class="split-bar-crf" id="split-bar-crf" style="width: 10%;"></div>
+          <div class="split-bar-crf" id="split-bar-crf" style="width: 20%;"></div>
           <div class="split-bar-gap"></div>
         </div>
 
@@ -1405,7 +1323,7 @@
         <ul style="list-style:disc; padding-left:20px; font-size:0.875rem; color:#383838; line-height:1.8;">
           <li>Submit CRF request within <strong>14 days</strong> of classification</li>
           <li>Response plan must include <strong>Sections A-G</strong></li>
-          <li>For Orange: ceiling <strong>$1M</strong> | For Red: ceiling <strong>$2M</strong></li>
+          <li>CRF allocation ceiling: <strong>$2M</strong></li>
           <li>Set a Scale Target of reaching at least <strong>10%</strong> of affected population</li>
         </ul>
       </div>
@@ -1440,11 +1358,11 @@
         </p>
         <p>
           Coverage options represent the percentage of total response programming that CRF funds,
-          from <strong>10%</strong> up to <strong>30%</strong>. Because the total programming cost is derived
-          from the target population, changing the target automatically adjusts the CRF allocation —
-          no separate scaling toggle is needed. The remaining gap represents the external fundraising
+          from <strong>10%</strong> up to <strong>30%</strong>, with a default of <strong>20%</strong>. Because the total programming cost is derived
+          from the target population, changing the target automatically adjusts the CRF allocation.
+          The remaining gap represents the external fundraising
           required to reach the IRC's response goal. All figures are rounded to the nearest $25,000.
-          The allocation ceiling ($1M Orange / $2M Red) still applies.
+          The CRF allocation ceiling is <strong>$2M</strong>.
         </p>
       </div>
       <div class="footer-legal">
@@ -1469,12 +1387,8 @@
   <script>
     (function () {
       var PER_CLIENT_COST = parseFloat(localStorage.getItem('irc_crf_per_client_cost')) || 47.34;
-      var DEFAULT_COVERAGE = parseFloat(localStorage.getItem('irc_crf_default_coverage')) || 10;
-
-      var STANCE_CEILINGS = {
-        orange: parseFloat(localStorage.getItem('irc_crf_ceiling_orange')) || 1000000,
-        red: parseFloat(localStorage.getItem('irc_crf_ceiling_red')) || 2000000
-      };
+      var DEFAULT_COVERAGE = parseFloat(localStorage.getItem('irc_crf_default_coverage')) || 20;
+      var CRF_CEILING = parseFloat(localStorage.getItem('irc_crf_ceiling')) || 2000000;
 
       // ── Severity thresholds: affected population ──
       var AFFECTED_THRESHOLDS = (function() {
@@ -1519,7 +1433,10 @@
       var gapPeopleEl = document.getElementById('gap-people');
       var gapAmountEl = document.getElementById('gap-amount');
       var ceilingWarning = document.getElementById('ceiling-warning');
-      var stanceButtons = document.querySelectorAll('.stance-btn');
+      var stanceDisplay = document.getElementById('stance-display');
+      var stanceDisplayBox = document.getElementById('stance-display-box');
+      var stanceDisplayName = document.getElementById('stance-display-name');
+      var stanceDisplayDetail = document.getElementById('stance-display-detail');
       var stanceHint = document.getElementById('stance-hint');
       var stanceNotEligible = document.getElementById('stance-not-eligible');
       var classificationSection = document.getElementById('classification-section');
@@ -1550,7 +1467,6 @@
       var targetManuallyEdited = false;
       var selectedCoverage = DEFAULT_COVERAGE;
       var selectedStance = null;
-      var stanceManuallyOverridden = false;
       var totalCost = 0;
       var classificationsCache = null; // null = not yet fetched
       var classificationsFetchFailed = false;
@@ -1619,7 +1535,6 @@
         } else {
           countryMeta.innerHTML = '';
         }
-        stanceManuallyOverridden = false;
         affectedAutoBadge.style.display = 'none';
         stanceAutoBadge.style.display = 'none';
         updateAutoStance();
@@ -1748,7 +1663,7 @@
           targetPop = 0;
           targetInput.value = '';
         }
-        if (!stanceManuallyOverridden) updateAutoStance();
+        updateAutoStance();
         updateTargetHint();
         updateResetButton();
         calculate();
@@ -1799,16 +1714,28 @@
       }
 
       // ── Auto stance from matrix ──
+      function showStanceDisplay(stance, severity) {
+        var isOrange = stance === 'orange';
+        var bgColor = isOrange ? '#E87722' : '#C4421A';
+        var textColor = isOrange ? '#000000' : '#FFFFFF';
+        var subColor = isOrange ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.8)';
+        stanceDisplayBox.style.background = bgColor;
+        stanceDisplayBox.style.border = '2px solid ' + bgColor;
+        stanceDisplayName.style.color = textColor;
+        stanceDisplayName.textContent = stance.charAt(0).toUpperCase() + stance.slice(1);
+        stanceDisplayDetail.style.color = subColor;
+        stanceDisplayDetail.textContent = 'Severity ' + severity + '/10 · Ceiling $2M';
+        stanceDisplay.style.display = 'block';
+      }
+
       function updateAutoStance() {
         stanceNotEligible.style.display = 'none';
         stanceExplainer.style.display = 'none';
+        stanceDisplay.style.display = 'none';
 
         if (!selectedCountry || affectedPop <= 0) {
-          if (!stanceManuallyOverridden) {
-            selectedStance = null;
-            stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
-            stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
-          }
+          selectedStance = null;
+          stanceHint.textContent = 'Classification stance will be determined automatically from the country and affected population.';
           return;
         }
 
@@ -1831,39 +1758,16 @@
 
         if (autoStance === 'orange' || autoStance === 'red') {
           selectedStance = autoStance;
-          stanceButtons.forEach(function (b) {
-            b.classList.toggle('selected', b.getAttribute('data-stance') === autoStance);
-          });
-          var ceiling = STANCE_CEILINGS[selectedStance];
-          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
-          stanceHint.innerHTML = '<strong>' + autoStance.charAt(0).toUpperCase() + autoStance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
+          showStanceDisplay(autoStance, severity);
+          stanceHint.innerHTML = '<strong>' + autoStance.charAt(0).toUpperCase() + autoStance.slice(1) + '</strong> classification — CRF allocation ceiling <strong>$2M</strong>';
           stanceNotEligible.style.display = 'none';
         } else {
-          // White or Yellow — not CRF eligible
           selectedStance = null;
-          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
-          stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          stanceHint.textContent = 'Classification stance will be determined automatically from the country and affected population.';
           stanceNotEligible.style.display = 'block';
-          stanceNotEligible.innerHTML = 'Based on the affected population and country profile, this emergency would not typically qualify for CRF allocation. You can override this by selecting a stance above.';
+          stanceNotEligible.innerHTML = 'Based on the affected population and country profile, this emergency would not typically qualify for CRF allocation.';
         }
       }
-
-      // ── Stance buttons (manual override) ──
-      stanceButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          stanceManuallyOverridden = true;
-          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
-          btn.classList.add('selected');
-          selectedStance = btn.getAttribute('data-stance');
-          stanceNotEligible.style.display = 'none';
-
-          var ceiling = STANCE_CEILINGS[selectedStance];
-          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
-          stanceHint.innerHTML = '<strong>' + selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) + '</strong> — indicative allocation ceiling of <strong>' + ceilingStr + '</strong>';
-
-          calculate();
-        });
-      });
 
       // ── Coverage buttons ──
       coverageButtons.forEach(function (btn) {
@@ -1892,10 +1796,8 @@
         gapPeopleEl.textContent = formatNum(gapPeople);
         gapAmountEl.textContent = formatCurrency(gapAmount);
 
-        var ceiling = selectedStance ? STANCE_CEILINGS[selectedStance] : 2000000;
-        var ceilingStr = '$' + (ceiling / 1000000) + 'M';
-        if (crfAmount > ceiling) {
-          ceilingWarning.innerHTML = 'This exceeds the indicative ' + ceilingStr + ' ceiling for ' + (selectedStance ? selectedStance.charAt(0).toUpperCase() + selectedStance.slice(1) : '') + ' emergencies. Typically the maximum allocation would be <strong>' + formatCurrency(ceiling) + '</strong>.';
+        if (crfAmount > CRF_CEILING) {
+          ceilingWarning.innerHTML = 'This exceeds the CRF allocation ceiling of <strong>' + formatCurrency(CRF_CEILING) + '</strong>.';
           ceilingWarning.style.display = 'block';
         } else {
           ceilingWarning.style.display = 'none';
@@ -1910,7 +1812,7 @@
           } else if (!selectedCountry) {
             totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a country above</span>';
           } else {
-            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Select a response stance</span>';
+            totalCostAmount.innerHTML = '<span class="total-cost-placeholder">Awaiting eligible classification</span>';
           }
           totalCostSub.style.display = 'none';
           allocationCard.style.display = 'none';
@@ -1921,7 +1823,7 @@
           nextStepsSection.style.display = 'none';
 
           if (targetPop > 0 && !selectedStance) {
-            allocationEmpty.textContent = 'Select a response stance to see allocation options';
+            allocationEmpty.textContent = 'Awaiting eligible classification (Orange or Red) to see allocation options';
           } else {
             allocationEmpty.textContent = 'Enter an affected population to see allocation options';
           }
@@ -2085,27 +1987,21 @@
           updateResetButton();
         }
 
-        // Auto-populate stance from classification
+        // Set stance from classification
         var stance = classification.stance ? classification.stance.toLowerCase() : '';
+        var sevDisplay = classification.severity != null ? classification.severity : '—';
         if (stance === 'orange' || stance === 'red') {
           selectedStance = stance;
-          stanceManuallyOverridden = true;
-          stanceButtons.forEach(function (b) {
-            b.classList.toggle('selected', b.getAttribute('data-stance') === stance);
-          });
-          var ceiling = STANCE_CEILINGS[stance];
-          var ceilingStr = '$' + (ceiling / 1000000) + 'M';
-          stanceHint.innerHTML = '<strong>' + stance.charAt(0).toUpperCase() + stance.slice(1) + '</strong> — indicative ceiling <strong>' + ceilingStr + '</strong> <span class="stance-auto-badge">Auto</span>';
+          showStanceDisplay(stance, sevDisplay);
+          stanceHint.innerHTML = '<strong>' + stance.charAt(0).toUpperCase() + stance.slice(1) + '</strong> classification — CRF allocation ceiling <strong>$2M</strong>';
           stanceNotEligible.style.display = 'none';
           stanceAutoBadge.style.display = 'inline-block';
         } else {
-          // Yellow/White — not CRF eligible
           selectedStance = null;
-          stanceManuallyOverridden = false;
-          stanceButtons.forEach(function (b) { b.classList.remove('selected'); });
-          stanceHint.textContent = 'Select the emergency response stance to set the allocation ceiling.';
+          stanceDisplay.style.display = 'none';
+          stanceHint.textContent = 'Classification stance will be determined automatically from the country and affected population.';
           stanceNotEligible.style.display = 'block';
-          stanceNotEligible.innerHTML = 'This classification is <strong>' + (stance.charAt(0).toUpperCase() + stance.slice(1) || 'unknown') + '</strong>, which does not typically qualify for CRF allocation. You can override by selecting a stance above.';
+          stanceNotEligible.innerHTML = 'This classification is <strong>' + (stance.charAt(0).toUpperCase() + stance.slice(1) || 'unknown') + '</strong>, which does not typically qualify for CRF allocation.';
         }
 
         calculate();
@@ -2248,13 +2144,6 @@
       // ── Hide affected badge on manual edit ──
       affectedInput.addEventListener('input', function () {
         affectedAutoBadge.style.display = 'none';
-      });
-
-      // ── Hide stance badge on manual stance click ──
-      stanceButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          stanceAutoBadge.style.display = 'none';
-        });
       });
 
       // ── Copy Summary to Clipboard ──
